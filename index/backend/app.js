@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 
+const postRoutes = require('./routes/post');
+
 const app = express();
 
 mongoose.connect(
@@ -26,5 +28,7 @@ app.use((req, res, next) => {
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use(bodyParser.json());
+
+app.use('/api/post', postRoutes);
 
 module.exports = app;
