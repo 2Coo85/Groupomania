@@ -2,9 +2,12 @@ import Vue from 'vue'
 import { BootstrapVue } from 'bootstrap-vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import UserAccount from '../views/UserAccount.vue'
+import SignUp from '../views/SignIn.vue'
+import LogIn from '../views/LogIn.vue'
 
 Vue.use(VueRouter);
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue);
 
 const routes = [
   {
@@ -15,24 +18,22 @@ const routes = [
   {
     path: '/account',
     name: 'UserAccount',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/UserAccount.vue')
+    component: UserAccount
   },
   {
     path: '/signUp',
     name: 'Sign Up',
-    component: () => import('../views/SignIn.vue')
+    component: SignUp
   },
   {
     path: '/logIn',
     name: 'Log In',
-    component: () => import('../views/LogIn.vue')
+    component: LogIn
   }
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 
