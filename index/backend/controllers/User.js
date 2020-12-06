@@ -28,7 +28,7 @@ exports.signUp = (req, res, next) => {
 };
 
 exports.logIn = (req, res, next) => {
-    User.findOne({email: req.body.email}).then(
+    User.findOne({username: req.body.username}).then(
         (user) => {
             if (!user) {
                 return res.status(401).json({
@@ -60,6 +60,67 @@ exports.logIn = (req, res, next) => {
     ).catch(
         (error) => {
             res.status(500).json({
+                error: error
+            });
+        }
+    );
+};
+
+exports.updateUser = (req, res, next) => {
+    let user = new User({_id: req.params._id});
+    if (user) {
+        req.body.user = JSON.parse(req.body.user);
+        user = {
+            username: req.body.user.username,
+            department: req.body.user.department,
+            phone: req.body.user.phone,
+            email: req.body.user.email,
+            name: req.body.user.name
+        };
+    } else {
+        User.findOne({_id: req.params._id}).then(
+            () => {
+                user = {
+                    username: req.body.username,
+                    department: req.body.department,
+                    phone: req.body.phone,
+                    email: req.body.email,
+                    name: req.body.name
+                };
+                User.updateOne({_id: req.params.id}, user).then(
+                    () => {
+                        res.status(201).json({
+                            message: 'Information updated successfully!'
+                        });
+                    }
+                ).catch(
+                    (error) => {
+                        res.status(400).json({
+                            error: error
+                        });
+                    }
+                );
+            }
+        ).catch(
+            (error) => {
+                res.status(400).json({
+                    error: error
+                });
+            }
+        );
+    }
+};
+
+exports.deleteUser = (req, res, next) => {
+    User.findOneAndDelete({username: req.body.username}).then(
+        () => {
+            res.status(200).json({
+                message: 'User deleted'
+            });
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
                 error: error
             });
         }
