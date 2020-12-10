@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/account">User Account</router-link> |
-      <router-link to="/logIn">Log Out</router-link>
+    
+    <div class="menuBar">
+      <router-link to="/signUp">Sign Up </router-link> //
+      <router-link to="/logIn"> Log In</router-link>
     </div>
+    <img src="icon.svg">
     <router-view/>
   </div>
 </template>
@@ -28,6 +29,9 @@
     &.router-link-exact-active {
       color: #42b983;
     }
+  }
+  img {
+    width: 70%;
   }
 }
 </style>

@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import { BootstrapVue } from 'bootstrap-vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import UserAccount from '../views/UserAccount.vue'
@@ -7,9 +6,10 @@ import SignUp from '../views/SignIn.vue'
 import LogIn from '../views/LogIn.vue'
 
 Vue.use(VueRouter);
-Vue.use(BootstrapVue);
 
-const routes = [
+const router = new VueRouter({
+  mode: 'history',
+  routes: [
   {
     path: '/',
     name: 'Home',
@@ -31,10 +31,6 @@ const routes = [
     component: LogIn
   }
 ]
+});
 
-const router = new VueRouter({
-  mode: 'history',
-  routes
-})
-
-export default router
+export default router;

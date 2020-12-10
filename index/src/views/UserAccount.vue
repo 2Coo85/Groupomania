@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>Account Preferences</h1>
+    <h1>{{ title }}</h1>
     <br>
     <label for="username">Username:</label>
     <p id="username">{{ username }}</p>
@@ -17,9 +17,9 @@
 
 <script>
 export default {
-  title: 'Account Preferences',
   data() {
     return {
+      title: 'Account Preferences',
       username: 'newUser123',
       name: 'Jane Smith',
       dept: 'Human Resources',

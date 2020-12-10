@@ -82,7 +82,7 @@ exports.getOnePost = (req, res, next) => {
     );
 };
 
-exports.createComment = (req, res, next) => {
+exports.countComment = (req, res, next) => {
     Post.findOne({_id: req.params.id}).then((post) => {
         post.usersCommented.push(req.body.userId);
         post.commentsPosted++;

@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-Vue.axios.defaults.baseURL = "https://jsonplaceholder.typicode.com/";
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    user: null || JSON.parse(localStorage.getItem('user')),
     departments: [
       "HR",
       "Accounting",
@@ -15,16 +14,37 @@ export default new Vuex.Store({
       "Marketing"    
     ],
     users: [],
-    posts: []
+    posts: [],
+    department: [],
+    postsRead: []
   },
   getters: {
-    getName,
-    getUsername,
-    getDepartment,
-    getEmail,
-    getPhone,
-    getAllPosts,
-    getPostByDept
+    getName: state => {
+      return state.user.name;
+    },
+    getUsername: state => {
+      return state.user.username;
+    },
+    getDepartment: state => {
+      return state.departments;
+    },
+    getEmail: state => {
+      return state.user.email;
+    },
+    getPhone: state => {
+      return state.user.phone;
+    },
+    getAllPosts: state => {
+      return state.posts;
+    },
+    getPostByDept: (state, department) => {
+      const postsByDept = state.posts.filter(post => post.department === department)
+      .sort((a, b) => new Date(b.postCreated) - new Date(a.postCreated));
+      return postsByDept;
+    },
+    getPostRead: state => {
+      return state.user.postsRead;
+    }
   },
   //place for methods needed for functions
   mutations: {

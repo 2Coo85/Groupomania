@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <img alt="Groupomania logo" src="icon.png">
+  <div class="container">
+    <NavBar/>
     <section id="post" class="post">
       <h5>d/{{ dept }}</h5>
       <h4>{{ title }} / {{ username }}</h4>
@@ -11,24 +11,20 @@
 
 <script>
 
+import NavBar from '../components/navBar';
+
 export default {
   name: 'post',
-  data() {
-    return {
-      name: 'Jane Smith',
-      dept: 'Human Resources',
-      email: 'work@email.com',
-      username: 'newUser123',
-      title: 'new post has been added',
-      body: 'this will be were the post will be added'
-    }
+  components: {
+    NavBar
   }
 }
 </script>
 
 <style lang="scss">
   img {
-    width: 100px
+    width: 75px;
+    border-radius: 50%;
   }
   .post {
     background-color: gray;
