@@ -1,0 +1,27 @@
+<template>
+    <div>
+        <h3 id="profile-message">Please fill in all fields</h3>
+        <form id="profile-form">
+            <label for="fName">First Name</label>
+            <input name="fName" type="text" min="2" max="12" required>
+            <label for="lname">Last Name</label>
+            <input type="text" name="lName" min="2" max="15" required>
+            <label for="username"> UserName 'between 6-8 characters'</label>
+            <input type="text" name="username" min="6" max="8" required>
+            <label for="department"> Department (choose from drop-down)</label>
+            <select name="dept-list">
+                <option value="HR">Human Resources</option>
+                <option value="design">Design</option>
+                <option value="development">Development</option>
+                <option value="accouting">Accounting</option>
+                <option value="marketing">Marketing</option>
+            </select>
+            <label for="email">Work Email</label>
+            <input type="email" name="email" min="5" required>
+            <label for="phone">Work Number with extention</label>
+            <input type="number" name="phone" min="10" max="14" required>
+            <button type="button" value="Enter the Mania"/>
+
+        </form>
+    </div>
+</template>

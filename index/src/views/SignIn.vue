@@ -12,7 +12,7 @@
             <label for="password">Password: </label>
             <input type="password" name="password" min="6" max="12" v-model="password" required>
             
-            <button class="btn" type="button">Sign Up</button>
+            <router-link to="/profile"><button class="btn" type="button">Sign Up</button></router-link>
         </form>
     </div>
 </template>

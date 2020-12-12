@@ -54,13 +54,7 @@ export default new Vuex.Store({
   },
   //place for functions
   actions: {
-    loadUsers({commit}) {
-      Vue.axios.get('users').then(result => {
-        commit('Save_Users', result.data);
-      }).catch(error => {
-        throw new Error(`API ${error}`);
-      });
-    }
+    
   },
   modules: {
   }

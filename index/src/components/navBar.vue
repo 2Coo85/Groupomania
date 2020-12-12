@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar m-2 menuBar">
-        <router-link to="/">Home </router-link>
+        <router-link to="/">Home </router-link> //
         <router-link to="/account"> User Account</router-link>
     </nav>
 </template>
