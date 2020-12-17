@@ -1,37 +1,27 @@
 <template>
   <div id="app">
-    
-    <div class="menuBar">
-      <router-link to="/signUp">Sign Up </router-link> //
-      <router-link to="/logIn"> Log In</router-link>
-    </div>
-    <img src="icon.svg">
+    <NavBar/>
     <router-view/>
   </div>
 </template>
 
+<script>
+import NavBar from './components/navBar'
+export default {
+  components: {
+    NavBar
+  }
+}
+</script>
+
 <style lang="scss">
+html, body, #app{
+  background-color: darkblue;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-  img {
-    width: 70%;
-  }
 }
 </style>

@@ -5,7 +5,6 @@ import UserAccount from '../views/UserAccount.vue'
 import SignUp from '../views/SignIn.vue'
 import LogIn from '../views/LogIn.vue'
 import Profile from '../views/Profile'
-import PostExpand from '../views/PostExpand'
 
 Vue.use(VueRouter);
 
@@ -36,10 +35,6 @@ const router = new VueRouter({
     path: '/profile',
     name: 'Profile',
     component: Profile
-  },
-  {
-    path: '/post/:title',
-    component: PostExpand
   }
 ]
 });

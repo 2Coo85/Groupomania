@@ -14,7 +14,26 @@ export default new Vuex.Store({
       "Marketing"    
     ],
     users: [],
-    posts: [],
+    posts: [
+      {
+        department: 'HR',
+        username: "User966",
+        title: "Woe is me",
+        textBody: "what a pain."
+      },
+      {
+        department: 'Accounting',
+        username: "User741",
+        title: "Count me in",
+        textBody: "numbers are fun."
+      },
+      {
+        department: 'Design',
+        username: "User852",
+        title: "Give me color",
+        imageUrl: "/media/red.png"
+      }
+    ],
     department: [],
     postsRead: []
   },

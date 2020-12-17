@@ -1,50 +1,30 @@
 <template>
   <div class="container">
-    <NavBar/>
-    <router-link to="expanded-post" data-toggle='modal' data-target='#expanded-post'>
-    <section id="post" class="post">
-      <h5>d/{{ dept }}</h5>
-      <h4>{{ title }} / {{ username }}</h4>
-      <p>{{ body }}</p>
-    </section>
-    </router-link>
-    <FullView/>
+    <Post
+      v-for="post in posts"
+      :department="post.department"
+      :username="post.username"
+      :title="post.title"
+      :body="post.textBody"
+      :media="post.mediaUrl"
+      :key="post.title"
+    />    
   </div>
 </template>
 
 <script>
-
-import NavBar from '../components/navBar';
-import FullView from '../components/popUp';
+import Post from '../components/post';
+import { mapState } from 'vuex';
 
 export default {
   components: {
-    NavBar,
-    FullView
+    Post
   },
-  data() {
-    return{
-      dept: "HR",
-      title: "New Post",
-      username: "User984",
-      body: "contents of the post"
-    }
+  computed:{
+    ...mapState({
+      posts: 'posts',
+      department: 'department'
+    })
   }
-  
 }
 </script>
-
-<style lang="scss">
-  img {
-    width: 75px;
-    border-radius: 50%;
-  }
-  .post {
-    background-color: gray;
-    border: solid 2px white;
-    color: rgb(10, 1, 56);
-  }
-  .post:hover {
-    border: inset 2px black;
-  }
-</style>
