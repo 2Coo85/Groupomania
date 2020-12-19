@@ -9,7 +9,7 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logIn">Log Out</a>
@@ -17,11 +17,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/account">My Account</a>
                 </li>
+                <b-nav-item-dropdown id="my-nav-dropdown" text="Department" toggle-class="nav-link-custom" right>
+                    <b-dropdown-item>Accounting</b-dropdown-item>
+                    <b-dropdown-item>Marketing</b-dropdown-item>
+                    <b-dropdown-item>HR</b-dropdown-item>
+                    <b-dropdown-item>Design</b-dropdown-item>
+                    <b-dropdown-item>Development</b-dropdown-item>
+                </b-nav-item-dropdown>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Departments">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
         </div>
     </nav>
 </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-      <article class="mb-3 post">
+      <article class="mb-3 mt-5 post">
         <header class="mb-1">
           <h4 class="mb-1">d/{{ department }} * {{ username }}</h4>
           <router-link to="#post-modal" v-b-modal.post-modal><h5>{{ title }}</h5></router-link>
@@ -11,14 +11,18 @@
       </article>
     <b-modal id="post-modal" hide-footer>
       <div class="d-block">
-        <header>
-          <h4>d/{{ department }} * {{ username }}</h4>
+        <header class="mb-3">
+          <h4 class="mb-4">d/{{ department }} * {{ username }}</h4>
           <h5>{{ title }}</h5>
         </header>
         <main>
           <p>{{ body }}</p>
+          <p><span id="save-post"><button type="button" id="savePostBtn">Save Post</button></span><span id="numberOfComments"> 0 </span>Comments</p>
         </main>
         <footer>
+          <h6 id="comments">Comments</h6>
+          <textarea name="comments-area" cols="50" rows="10" placeholder="Enter comments here..."></textarea>
+          <button type="button" value="submit-comment">Submit</button>
         </footer>
       </div>
     </b-modal>
@@ -28,7 +32,7 @@
 <script>
   export default {
   name: 'post',
-  props: ['department', 'username', 'title', 'body']
+  props: ['department', 'username', 'title', 'body', 'numOfComments']
 }
 </script>
 
@@ -40,25 +44,33 @@
   }
   .post {
     background-color: rgb(215, 244, 245);
-    border: inset 2px rgb(88, 34, 235);
+    border: ridge 3px rgb(248, 140, 91);
     color: rgb(10, 1, 56);
     min-height: 150px;
   }
   .post:hover {
     border: outset 5px white;
+    box-shadow: 5px 5px 10px white;
   }
   header{
     text-align: left;
   }
   header h4{
-    font-size: .95em;
+    font-size: .90em;
   }
   header h5{
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: bold;
   }
   button#title h5{
     background-color: none;
     border: none;
+  }
+  #post-modal{
+    background-color: rgb(0, 0, 121);
+    
+  }
+  #post-modal{
+    min-height: 300px;
   }
 </style>

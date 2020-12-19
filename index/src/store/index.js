@@ -14,6 +14,7 @@ export default new Vuex.Store({
       "Marketing"    
     ],
     users: [],
+    numOfComments: 0,
     posts: [
       {
         department: 'HR',

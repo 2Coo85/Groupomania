@@ -2,17 +2,30 @@
   <div id="account">
     <form id="account-form">
       <h3>{{ title }}</h3>
-      <br>
-      <label for="username">Username:</label>
-      <p id="username">{{ username }}</p>
-      <label for="name">Name:</label>
-      <p id="name">{{ name }}</p>
-      <label for="dept">Department:</label>
-      <p id="dept">{{ dept }}</p>
-      <label for="email">Email</label>
-      <p id="email">{{ email }}</p>
-      <label for="phone">Phone#:</label>
-      <p id="phone">{{ phone }}</p>
+      <section class="user-info">
+        <label for="username">Username: </label>
+        <p id="username" >{{ username }}</p>
+      </section>
+      <section class="user-info">
+        <label for="name">Name: </label>
+        <p id="name">{{ name }}</p>
+      </section>
+      <section class="user-info">
+        <label for="dept">Department: </label>
+        <p id="dept">{{ dept }}</p>
+      </section>
+      <section class="user-info">
+        <label for="email">Email: </label>
+        <p id="email">{{ email }}</p>
+      </section>
+      <section class="user-info">
+        <label for="phone">Phone#: </label>
+        <p id="phone">{{ phone }}</p>
+      </section>
+      <section class="user-info">
+        <router-link to="/profile"><button type="button" class="account-btn" value="Modify">Modify</button></router-link>
+        <button type="button" class="account-btn" value="delete">Delete Account</button>
+      </section>
     </form>
   </div>
 </template>
@@ -39,11 +52,19 @@ export default {
     width: 90%;
     margin: 30px 50px;
     text-align: left;
-    
   }
-  #account-form label, #account-form p{
-    flex-flow: row wrap;
+  .account-btn {
+    margin-right: 15px;
+  }
+  .user-info{
     display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .user-info p {
+    margin: 0 8px;
+    padding-bottom: 3px;
   }
   #account label{
     font-weight: bold;
