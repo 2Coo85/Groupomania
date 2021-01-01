@@ -10,6 +10,7 @@ import Marketing from '../views/Marketing';
 import HR from '../views/HR';
 import Design from '../views/Design';
 import Development from '../views/Development';
+import ReadPosts from '../views/ReadPosts';
 
 Vue.use(VueRouter);
 
@@ -65,6 +66,11 @@ const router = new VueRouter({
     path: '/development',
     name: 'Development',
     component: Development
+  },
+  {
+    path: '/readPosts',
+    name: 'Read Posts',
+    component: ReadPosts
   }
 ]
 });

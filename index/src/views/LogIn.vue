@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="secondary-bkgd">
         <h2>{{ greeting }}</h2>
         <Login/>
     </div>

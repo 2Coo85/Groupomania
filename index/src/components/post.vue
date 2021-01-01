@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="posting" id="posts">
       <article class="mb-3 mt-5 post">
         <header class="mb-1">
           <h4 class="mb-1">d/{{ department }} * {{ username }}</h4>
@@ -44,9 +44,10 @@
   }
   .post {
     background-color: rgb(215, 244, 245);
-    border: ridge 3px rgb(248, 140, 91);
-    color: rgb(10, 1, 56);
+    border: ridge 3px #c2565d;
+    color: #091f43;
     min-height: 150px;
+    padding: 5px;
   }
   .post:hover {
     border: outset 5px white;

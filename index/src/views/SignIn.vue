@@ -1,5 +1,5 @@
 <template>
-    <div id="signUp">
+    <div id="signUp" class="secondary-bkgd">
         <h2> {{ greeting1 }} </h2>
         <h4 class="mb-4"> {{ greeting2 }} </h4>
         <SignUp/>

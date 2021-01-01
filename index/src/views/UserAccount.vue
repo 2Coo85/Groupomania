@@ -1,5 +1,5 @@
 <template>
-  <div id="account">
+  <div id="account" class="secondary-bkgd">
     <form id="account-form">
       <h3>{{ title }}</h3>
       <section class="user-info">
@@ -46,7 +46,7 @@ export default {
 </script>
 
 <style lang="scss">
-  #account {
+  .secondary-bkgd {
     border: outset 3px white;
     background-color: rgb(222, 222, 226);
     width: 90%;

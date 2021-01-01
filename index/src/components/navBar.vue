@@ -1,7 +1,7 @@
 <template>
 <div>
-    <nav class="navbar navbar-expand-sm navbar-light bg-light">
-        <a class="navbar-brand" href="/"><img src="icon.png">Groupomania</a>
+    <nav class="menuBar navbar navbar-expand-sm navbar-light bg-light">
+        <a class="navbar-brand" href="/">Groupomania</a>
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -11,30 +11,43 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
+                <b-nav-item-dropdown id="dropdown-dropright" dropright text="Department" toggle-class="nav-link-custom" right>
+                    <b-dropdown-item href="/accounting">Accounting</b-dropdown-item>
+                    <b-dropdown-item href="/marketing">Marketing</b-dropdown-item>
+                    <b-dropdown-item href="/hr">HR</b-dropdown-item>
+                    <b-dropdown-item href="/design">Design</b-dropdown-item>
+                    <b-dropdown-item href="/development">Development</b-dropdown-item>
+                </b-nav-item-dropdown>
+                <b-nav-item-dropdown text="My Account" dropright right>          
+                    <b-dropdown-item href="/account">User Profile</b-dropdown-item>
+                    <b-dropdown-item href="/readPosts">Posts Read</b-dropdown-item>
+                </b-nav-item-dropdown>
+                <b-nav-item-dropdown text="Create Post">
+                    <b-dropdown-item><CreatePost/></b-dropdown-item>
+                </b-nav-item-dropdown>
                 <li class="nav-item">
                     <a class="nav-link" href="/logIn">Log Out</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/account">My Account</a>
-                </li>
-                <b-nav-item-dropdown id="my-nav-dropdown" text="Department" toggle-class="nav-link-custom" right>
-                    <b-dropdown-item>Accounting</b-dropdown-item>
-                    <b-dropdown-item>Marketing</b-dropdown-item>
-                    <b-dropdown-item>HR</b-dropdown-item>
-                    <b-dropdown-item>Design</b-dropdown-item>
-                    <b-dropdown-item>Development</b-dropdown-item>
-                </b-nav-item-dropdown>
             </ul>
         </div>
     </nav>
 </div>
 </template>
 
+<script>
+import CreatePost from './createPost';
+export default {
+    components: {
+        CreatePost
+    }
+}
+</script>
+
 <style lang="scss">
      .menuBar {
         background-color: rgb(189, 241, 243);
         color: black;
-        border: solid 1px lightgray;
+        border-bottom: solid 3px #c2565d;
         margin-bottom: 1%;
         display: flex;
         flex-flow: row;

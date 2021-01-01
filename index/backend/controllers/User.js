@@ -46,7 +46,8 @@ exports.logIn = (req, res, next) => {
                     randtoken.generate(16),
                     {expiresIn: '12h'});
                     res.status(200).json({
-                        token: token
+                        userId: user._id,
+                        token: 'token'
                     });
                 }
             ).catch(

@@ -21,7 +21,7 @@
             <input type="email" name="email" min="5" required>
             <label for="phone">Work Number with extention</label>
             <input type="number" name="phone" min="10" max="14" required>
-            <router-link to="/"><button type="button" value="Enter the Mania">Enter the Mania</button></router-link>
+            <router-link to="/account"><button type="button">Update</button></router-link>
         </form>
     </div>
 </template>
@@ -44,14 +44,24 @@ export default {
 </script>
 
 <style lang="scss">
-    form{
+    #profile h4{
+        color: #c2565d;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+    #profile-form{
         display: flex;
         flex-flow: column wrap;
+        border: outset 3px #c2565d;
+        background-color: rgb(222, 222, 226);
+        width: 90%;
+        margin: 30px 50px;
+        padding: 15px;
     }
     form input{
         margin-bottom: 5px;
         border: outset 2px rgb(30, 200, 212);
-        background-color: lightgray;
+        background-color: rgb(144, 185, 247);
     }
     form label{
         font-weight: bold;
