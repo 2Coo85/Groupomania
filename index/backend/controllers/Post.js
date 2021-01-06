@@ -33,6 +33,7 @@ exports.createMediaPost = (req, res, next) => {
         department: req.body.post.department,
         mediaUrl: url + '/media/' + req.file.filename,
         title: req.body.post.title,
+        file: req.body.post.file,
         commentsPosted: 0,
         usersCommented: req.body.post.usersCommented
     });

@@ -17,26 +17,7 @@ export default new Vuex.Store({
     ],
     users: [],
     numOfComments: 0,
-    posts: [
-      {
-        department: 'HR',
-        username: "User966",
-        title: "Woe is me",
-        textBody: "what a pain."
-      },
-      {
-        department: 'Accounting',
-        username: "User741",
-        title: "Count me in",
-        textBody: "numbers are fun."
-      },
-      {
-        department: 'Design',
-        username: "User852",
-        title: "Give me color",
-        imageUrl: "/media/red.png"
-      }
-    ],
+    posts: [],
     department: [],
     postsRead: []
   },
@@ -116,17 +97,17 @@ export default new Vuex.Store({
   //place for functions
   actions: {
     async createPost(data) {
-      Axios.defaults.headers.post['Authorization'] = 'Bearer ' + this.state.authToken;
+      Axios.defaults.headers.post.Authorization = 'Bearer ' + this.state.authToken;
       const newPost = new FormData();
       newPost.append('department', data.department);
       newPost.append('username', data.username);
       newPost.append('title', data.title);
-      newPost.append('body', data.postTitle);
+      newPost.append('body', data.textBody);
       await Axios.post('http://localhost:3000/api/post', newPost);
     },
     async allPosts({commit}){
       try {
-        Axios.defaults.headers.get['Authorization'] = 'Bearer ' + this.state.authToken;
+        Axios.defaults.headers.get.Authorization = 'Bearer ' + this.state.authToken;
         const response = await Axios.get('http://localhost:3000/api/posts');
         const posts = await response.data;
         commit('createPost', posts);
@@ -135,7 +116,71 @@ export default new Vuex.Store({
         console.error('Unable to create post.');
       }
     },
-    
+    async readPost ({commit}, data) {
+      try {
+        const response = await Axios.post('http://localhost:3000/api/auth/user/' + this.state.user._id + '/read', {
+          postsRead: data
+        });
+        const postRead = await response.data.user.postsRead;
+        commit('setPostRead', postRead);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async registerNewUser({commit}, data) {
+      try {
+        const response = Axios.post('http://localhost:3000/api/auth/signUp', {
+          name: data.name,
+          username: data.username,
+          department: data.department,
+          password: data.password,
+          phone: data.phone
+        });
+        const newUser = await response.date.username;
+        const authToken = await response.data.authToken;
+        localStorage.setItem('authToken', JSON.stringify(authToken));
+        localStorage.setItem('username', JSON.stringify(newUser));
+        Axios.defaults.headers.post.Authorization = 'Bearer ' + authToken;
+        commit('login_success', {authToken, newUser});
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async userLogin({commit}, data) {
+      try {
+        const response = await Axios.post('http://localhost:3000/api/auth/login', {
+          username: data.username,
+          password: data.password
+        });
+        const authToken = await response.data.authToken;
+        const username = await response.data.username;
+        localStorage.setItem('authToken', JSON.stringify(authToken));
+        localStorage.setItem('username', JSON.stringify(username));
+        Axios.defaults.headers.post.Authorization = 'Bearer ' + authToken;
+        commit('login_success', {username, authToken});
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getUser({commit}) {
+      try {
+        const response = await Axios.get('http://localhost:3000/api/auth/user' + this.getters.getUserId);
+        const data = await response.data;
+        commit('setOneUser', data);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async deleteAccount({commit}) {
+      Axios.defaults.headers.common.Authorization = 'Bearer ' + this.state.authToken;
+      try {
+        await Axios.delete(`http://localhost:3000/api/auth/user/` + this.state.user._id);
+        commit('deleteAcct');
+        }
+        catch (error){
+        console.log(error);            
+    }   
+    }
   },
   modules: {
   }

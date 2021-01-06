@@ -2,17 +2,18 @@
   <div class="posting" id="posts">
       <article class="mb-3 mt-5 post">
         <header class="mb-1">
-          <h4 class="mb-1">d/{{ department }} * {{ username }}</h4>
+          <h4 class="mb-1">d/{{ post.department }} * {{ post.username }}</h4>
           <router-link to="#post-modal" v-b-modal.post-modal><h5>{{ title }}</h5></router-link>
         </header>
         <div class="posting">
-          {{ body }}
+          <p>{{ body }}</p>
+          <img v-if="post.imageUrl" :src="post.imageUrl" alt="image">
         </div>
       </article>
     <b-modal id="post-modal" hide-footer>
       <div class="d-block">
         <header class="mb-3">
-          <h4 class="mb-4">d/{{ department }} * {{ username }}</h4>
+          <h4 class="mb-4">d/{{ post.department }} * {{ post.username }}</h4>
           <h5>{{ title }}</h5>
         </header>
         <main>
@@ -31,8 +32,7 @@
 
 <script>
   export default {
-  name: 'post',
-  props: ['department', 'username', 'title', 'body', 'numOfComments']
+  props: ['post']
 }
 </script>
 

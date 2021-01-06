@@ -7,9 +7,20 @@
 
 <script>
 import NavBar from './components/navBar'
+import {mapState} from 'vuex';
 export default {
   components: {
-    NavBar
+    NavBar 
+  },
+  mounted() {
+    this.$store.dispatch('createPost');
+    this.$store.dispatch('allPosts');
+  },
+  computed: {
+    ...mapState([
+      'posts',
+      'numOfComments'
+    ])
   }
 }
 </script>

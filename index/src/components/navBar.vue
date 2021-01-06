@@ -22,9 +22,7 @@
                     <b-dropdown-item href="/account">User Profile</b-dropdown-item>
                     <b-dropdown-item href="/readPosts">Posts Read</b-dropdown-item>
                 </b-nav-item-dropdown>
-                <b-nav-item-dropdown text="Create Post">
-                    <b-dropdown-item><CreatePost/></b-dropdown-item>
-                </b-nav-item-dropdown>
+                <CreatePost/>
                 <li class="nav-item">
                     <a class="nav-link" href="/logIn">Log Out</a>
                 </li>

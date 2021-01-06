@@ -5,11 +5,7 @@ import UserAccount from '../views/UserAccount.vue'
 import SignUp from '../views/SignIn.vue'
 import LogIn from '../views/LogIn.vue'
 import Profile from '../views/Profile'
-import Accounting from '../views/Accounting';
-import Marketing from '../views/Marketing';
-import HR from '../views/HR';
-import Design from '../views/Design';
-import Development from '../views/Development';
+import Departments from '../views/Development';
 import ReadPosts from '../views/ReadPosts';
 
 Vue.use(VueRouter);
@@ -43,29 +39,9 @@ const router = new VueRouter({
     component: Profile
   },
   {
-    path: '/accounting',
-    name: 'Accounting',
-    component: Accounting
-  },
-  {
-    path: '/marketing',
-    name: 'Marketing',
-    component: Marketing
-  },
-  {
-    path: '/hr',
-    name: 'HR',
-    component: HR
-  },
-  {
-    path: '/design',
-    name: 'Design',
-    component: Design
-  },
-  {
-    path: '/development',
-    name: 'Development',
-    component: Development
+    path: '/departments/:id',
+    name: 'Departments',
+    component: Departments
   },
   {
     path: '/readPosts',
