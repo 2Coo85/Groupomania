@@ -9,11 +9,10 @@ export default new Vuex.Store({
     authToken: null || JSON.parse(localStorage.getItem('authToken')),
     user: null || JSON.parse(localStorage.getItem('user')),
     departments: [
+      "Retail Operations",
+      "Sales and Marketing",
       "HR",
-      "Accounting",
-      "Design",
-      "Development",
-      "Marketing"    
+      "Management"
     ],
     users: [],
     numOfComments: 0,

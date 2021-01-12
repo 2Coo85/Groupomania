@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-      <Post v-if="department === 'Accounting'"/>
+      <Post />
   </div>
 </template>
 
@@ -21,7 +21,8 @@ export default {
       return this.getPostbyDept('Accounting');
     },
     ...mapState([
-      'posts',    
+      'posts',
+      'departments'    
     ])
   },
   methods: {

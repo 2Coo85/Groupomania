@@ -7,7 +7,7 @@
 
 <script>
 import NavBar from './components/navBar'
-import {mapState} from 'vuex';
+import {mapState, mapGetters} from 'vuex';
 export default {
   components: {
     NavBar 
@@ -20,6 +20,10 @@ export default {
     ...mapState([
       'posts',
       'numOfComments'
+    ]),
+    ...mapGetters([
+      'getDepartment',
+      'getPostsByDept'
     ])
   }
 }

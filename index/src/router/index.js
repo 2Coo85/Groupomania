@@ -5,7 +5,7 @@ import UserAccount from '../views/UserAccount.vue'
 import SignUp from '../views/SignIn.vue'
 import LogIn from '../views/LogIn.vue'
 import Profile from '../views/Profile'
-import Departments from '../views/Development';
+import Departments from '../views/Departments';
 import ReadPosts from '../views/ReadPosts';
 
 Vue.use(VueRouter);

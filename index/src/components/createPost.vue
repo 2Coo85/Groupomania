@@ -19,6 +19,15 @@
                 </b-form-group>
                 <b-form-group label="Content" label-for="form-content">
                     <b-form-textarea id="form-content" placeholder="What's on your mind?" cols="15" rows="10"></b-form-textarea>
+                    <b-form-file
+                        v-model="file"
+                        :state="Boolean(file)"
+                        placeholder="Select file or drag it here..."
+                        drop-placeholder="Drop file here..."
+                        accept="image/jpeg, image/png, image/gif, video/mpeg"
+                        size='sm'
+                        ></b-form-file>
+                    <div class="mt-3">Selected file: {{ file ? file.name : '' }}</div>
                 </b-form-group>
                 <b-dropdown-divider></b-dropdown-divider>
                 <b-button size="md" type="button" @click="{createPost}">Submit Post</b-button>
@@ -31,6 +40,11 @@
 import { mapState, mapActions } from 'vuex';
 
 export default {
+    data() {
+        return {
+            file: null
+        }
+    },
     ...mapState ([
         'posts'
     ]),

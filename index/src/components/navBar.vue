@@ -12,16 +12,16 @@
                     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <b-nav-item-dropdown id="dropdown-dropright" dropright text="Department" toggle-class="nav-link-custom" right>
-                    <b-dropdown-item href="/accounting">Accounting</b-dropdown-item>
-                    <b-dropdown-item href="/marketing">Marketing</b-dropdown-item>
-                    <b-dropdown-item href="/hr">HR</b-dropdown-item>
-                    <b-dropdown-item href="/design">Design</b-dropdown-item>
-                    <b-dropdown-item href="/development">Development</b-dropdown-item>
+                    <b-link :to="'/departments/departments[1]'">{{ departments[1] }}</b-link>
+                    <b-link :to="'/departments/departments[0]'">{{ departments[0] }}</b-link>
+                    <b-link :to="'/departments/departments[2]'">{{ departments[2] }}</b-link>
+                    <b-link :to="'/departments/departments[3]'">{{ departments[3] }}</b-link>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown text="My Account" dropright right>          
                     <b-dropdown-item href="/account">User Profile</b-dropdown-item>
                     <b-dropdown-item href="/readPosts">Posts Read</b-dropdown-item>
                 </b-nav-item-dropdown>
+                
                 <CreatePost/>
                 <li class="nav-item">
                     <a class="nav-link" href="/logIn">Log Out</a>
@@ -34,10 +34,21 @@
 
 <script>
 import CreatePost from './createPost';
+import {mapState, mapGetters} from 'vuex';
+
 export default {
     components: {
         CreatePost
+    },
+    computed: {
+      ...mapState([
+        'departments'
+    ]),
+    ...mapGetters([
+        'getDepartments'
+    ])  
     }
+    
 }
 </script>
 
