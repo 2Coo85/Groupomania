@@ -1,5 +1,17 @@
 <template>
     <div>
-        <h1>Management</h1>
+        <template>
+            <h1>Management</h1>
+        </template>
+        <Post/>
     </div>
 </template>
+
+<script>
+import Post from '../components/Post'
+export default {
+  components: {
+    Post
+  }
+}
+</script>

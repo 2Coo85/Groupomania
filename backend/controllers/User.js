@@ -1,14 +1,16 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-let randtoken = require('rand-token');
+let randtoken = require('random-token');
 
 exports.signUp = (req, res, next) => {
     bcrypt.hash(req.body.password, 10).then(
         (hash) => {
             const user = new User({
                 username: req.body.username,
-                password: hash
+                password: hash,
+                department: req.body.department,
+                email: req.body.department
             });
             user.save().then(
                 () => {
@@ -47,7 +49,7 @@ exports.logIn = (req, res, next) => {
                     {expiresIn: '12h'});
                     res.status(200).json({
                         userId: user._id,
-                        token: 'token'
+                        token: token
                     });
                 }
             ).catch(

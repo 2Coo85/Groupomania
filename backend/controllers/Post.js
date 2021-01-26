@@ -2,8 +2,10 @@ const Post = require('../models/post');
 const fs = require('fs');
 
 exports.createTextPost = (req, res, next) => {
+    req.body.post = JSON.parse(req.body.post);
     const post = new Post({
-        username: req.body.post.username,
+        userId: req.body.post.userId,
+        userName: req.body.post.userName,
         department: req.body.post.department,
         title: req.body.post.title,
         postText: req.body.post.postText,
@@ -29,7 +31,7 @@ exports.createMediaPost = (req, res, next) => {
     req.body.post = JSON.parse(req.body.post);
     const url = req.protocol + '://' + req.get('host');
     const post = new Post({
-        username: req.body.post.username,
+        userName: req.body.post.userName,
         department: req.body.post.department,
         mediaUrl: url + '/media/' + req.file.filename,
         title: req.body.post.title,
@@ -51,20 +53,6 @@ exports.createMediaPost = (req, res, next) => {
         }
     );
 }
-
-exports.showAllPosts = (req, res, next) => {
-    Post.find().then(
-        (posts) => {
-            res.status(200).json(posts);
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
-};
 
 exports.getOnePost = (req, res, next) => {
     Post.findOne({
@@ -102,3 +90,17 @@ exports.countComment = (req, res, next) => {
         );
     });
 }
+
+exports.showAllPosts = (req, res, next) => {
+    Post.find().then(
+        (posts) => {
+            res.status(200).json(posts);
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
+};

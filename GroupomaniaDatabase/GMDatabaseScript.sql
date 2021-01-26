@@ -36,7 +36,7 @@ IF N'$(__IsSqlCmdEnabled)' NOT LIKE N'True'
 
 
 GO
-USE [$(DatabaseName)];
+USE [$(GroupomaniaMainDB)];
 
 
 GO
@@ -221,7 +221,7 @@ PRINT N'Checking existing data against newly created constraints';
 
 
 GO
-USE [$(DatabaseName)];
+USE [$(GroupomaniaMainDB)];
 
 
 GO

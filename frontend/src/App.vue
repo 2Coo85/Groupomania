@@ -1,18 +1,41 @@
 <template>
-<div>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/settings">My Account</router-link> |
-    <router-link to="/management">Management</router-link> |
-    <router-link to="/hr">Human Resources</router-link> |
-    <router-link to="/retailops">Retail Operations</router-link> |
-    <router-link to="/salesMarketing">Sales and Marketing</router-link> 
+  <div id="app">
+    <NavBar/>
+    <router-view/>
   </div>
-  <router-view/>
-</div>
 </template>
 
+<script>
+import NavBar from '@/components/NavBar'
+import { mapState, mapActions } from 'vuex'
+export default {
+  name: 'navbar',
+  components: {
+    NavBar
+  },
+  computed: {
+    ...mapActions([
+      'loadAllPosts',
+      'loadAllComments',
+      'getUser',
+      'getOnePost',
+      'addNewComment'
+    ]),
+    ...mapState([
+      'departments',
+      'posts',
+      'comments',
+      'user'
+    ])
+  }
+}
+</script>
+
 <style lang="scss">
+html, #app {
+  background-color: #091f43;
+  color: white;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -21,16 +44,4 @@
   color: #2c3e50;
 }
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>

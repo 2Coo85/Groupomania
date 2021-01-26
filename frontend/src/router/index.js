@@ -1,11 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Profile from '../views/Profile'
-import Settings from '../views/UserSettings'
-import SalesMarketing from '../views/SalesMarketing'
-import HR from '../views/HR'
-import RetailOps from '../views/RetailOps'
-import Management from '../views/Management'
+import Management from '../views/Management.vue'
+import HR from '../views/HR.vue'
+import SalesMarketing from '../views/SalesMarketing.vue'
+import RetailOps from '../views/RetailOps.vue'
+import PostsSaved from '../views/PostsRead.vue'
+import Settings from '../views/UserSettings.vue'
+import Main from '../views/MainPage.vue'
+
+Vue.use(VueRouter)
 
 const routes = [
   {
@@ -14,14 +18,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/profile',
-    name: 'Profile',
-    component: Profile
-  },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: Settings
+    path: '/home',
+    name: 'Main Page',
+    component: Main
   },
   {
     path: '/management',
@@ -30,8 +29,13 @@ const routes = [
   },
   {
     path: '/retailops',
-    name: 'Retail Ops',
+    name: 'RetailOps',
     component: RetailOps
+  },
+  {
+    path: '/salesMarketing',
+    name: 'Sales and Marketing',
+    component: SalesMarketing
   },
   {
     path: '/hr',
@@ -39,14 +43,20 @@ const routes = [
     component: HR
   },
   {
-    path: '/salesMarketing',
-    name: 'Sales and Marketing',
-    component: SalesMarketing
+    path: '/savedPosts',
+    name: 'Posts Saved',
+    component: PostsSaved
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: Settings
   }
 ]
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
   routes
 })
 

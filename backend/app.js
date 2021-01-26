@@ -5,11 +5,12 @@ const path = require('path');
 
 const postRoutes = require('./routes/post');
 const userRoutes = require('./routes/user');
+const commentRoutes = require('./routes/comment');
 
 const app = express();
 
 mongoose.connect(
-    'mongodb+srv://tc3085:QgJS2oUPE7bXBwrg@cluster0.zuqab.mongodb.net/vue-cli-service?retryWrites=true&w=majority',
+    'mongodb+srv://tc3085:S6vK5mmykEizcnP7@cluster0.zuqab.mongodb.net/test?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Successfully connected to MongoDB Atlas!');
@@ -32,5 +33,6 @@ app.use(bodyParser.json());
 
 app.use('/api/post', postRoutes);
 app.use('/api/auth', userRoutes);
+app.use('/api/comments', commentRoutes);
 
 module.exports = app;

@@ -1,18 +1,23 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Welcome to Groupomania</h1>
+    <form>
+      <b-button id="signUp" @click="$bvModal.show('signUp')">Sign Up</b-button>
+      <b-button id="logIn" @click="$bvModal.show('logIn')">Log In</b-button>
+    </form>
+    <Login/>
+    <Signup/>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import Login from '../components/LogIn'
+import Signup from '../components/Register'
 
 export default {
-  name: 'Home',
   components: {
-    HelloWorld
+    Login,
+    Signup
   }
 }
 </script>
