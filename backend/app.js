@@ -10,7 +10,7 @@ const commentRoutes = require('./routes/comment');
 const app = express();
 
 mongoose.connect(
-    'mongodb+srv://tc3085:S6vK5mmykEizcnP7@cluster0.zuqab.mongodb.net/test?retryWrites=true&w=majority',
+    'mongodb+srv://tc3085:S6vK5mmykEizcnP7@cluster0.zuqab.mongodb.net/vue-cli-service?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Successfully connected to MongoDB Atlas!');

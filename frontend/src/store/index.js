@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import router from '../router'
 
 Vue.use(Vuex)
 
@@ -16,14 +17,25 @@ export default new Vuex.Store({
     savedPosts: [],
     users: [],
     oneUser: [],
-    authToken: localStorage.getItem('token'),
+    authToken: localStorage.getItem('authToken') || null,
     department: [],
-    user: localStorage.getItem('user'),
-    comments: []
+    user: localStorage.getItem('user') || null,
+    comments: [],
+    email: [],
+    username: []
   },
   getters: {
     getUserName: (state) => {
-      return state.user.username
+      return state.username
+    },
+    getUserId: (state) => {
+      return state.user._id
+    },
+    getUserDepartment: state => {
+      return state.user.department
+    },
+    getUserEmail: (state) => {
+      return state.user.email
     },
     getAllPosts: (state) => {
       return state.posts
@@ -37,9 +49,12 @@ export default new Vuex.Store({
     getOneUser: (state) => {
       return state.oneUser
     },
+    getEmail: (state) => {
+      return state.email
+    },
     getPostsByDept: (state, department) => {
       const postByDept = state.posts
-        .filter(posts => posts.department === department)
+        .filter(post => post.department === department)
         .sort((a, b) => new Date(b.created) - new Date(a.created))
       return postByDept
     },
@@ -54,8 +69,11 @@ export default new Vuex.Store({
     Set_Users: (state, users) => {
       return state.users
     },
-    Delete_User: (state, id) => {
-      return state.users.filter((user) => user.id !== id)
+    Delete_User: (state) => {
+      state.authToken = null
+      state.user = ''
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('user')
     },
     One_User: (state, oneUser) => {
       state.oneUser = oneUser
@@ -67,7 +85,7 @@ export default new Vuex.Store({
     setDept: (state, department) => {
       for (const dept of department) {
         state.department.push({
-          depart: dept.department,
+          department: dept.department,
           username: dept.username,
           postTitle: dept.title
         })
@@ -87,6 +105,18 @@ export default new Vuex.Store({
     },
     Add_Comment: (state, comment) => {
       return state.comments.unshift(comment)
+    },
+    View_Post: (state, currentPost) => {
+      const index = state.posts.findIndex((post) => post.id === currentPost.id)
+      if (index !== -1) {
+        state.posts.splice(index, 1, currentPost)
+      }
+    },
+    logout (state) {
+      state.isUserLoggedIn = false
+      state.user = ''
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('user')
     }
   },
   actions: {
@@ -101,18 +131,17 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-    async deleteUser ({ commit, dispatch }, id) {
+    async deleteUser ({ commit }) {
       try {
-        const response = await axios.delete(
-          'http://localhost:3000/api/auth/users/' + id,
+        await axios.delete(
+          'http://localhost:3000/api/auth/users/' + this.state.user._id,
           {
             headers: {
-              authorization: 'Bearer ' + localStorage.getItem('token')
+              authorization: 'Bearer ' + this.state.authToken
             }
           }
         )
-        commit('Delete_User', response.data)
-        dispatch('onLogOut')
+        commit('Delete_User')
       } catch (error) {
         console.log(error)
       }
@@ -127,7 +156,7 @@ export default new Vuex.Store({
         },
         {
           headers: {
-            authorization: 'Bearer ' + localStorage.getItem('token')
+            authorization: 'Bearer ' + localStorage.getItem('authToken')
           }
         })
         const user = await response.data.user
@@ -143,7 +172,7 @@ export default new Vuex.Store({
       try {
         const response = await axios.post('http://localhost:3000/api/post', data, {
           headers: {
-            authorization: 'Bearer ' + localStorage.getItem('token')
+            authorization: 'Bearer ' + localStorage.getItem('authToken')
           }
         })
         commit('Create_Post', response.data)
@@ -151,19 +180,23 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-    async getUser ({ commit }, data) {
+    async getUser ({ commit }) {
       try {
-        const response = await axios.get('http://localhost:3000/api/auth/user/' + this.getters.getUser)
-        commit('One_User', response.data)
+        const response = await axios.get('http://localhost:3000/api/auth/user/' + this.getters.getUserId)
+        const data = await response.data
+        commit('One_User', data)
       } catch (error) {
         console.error(error)
       }
     },
     async loadAllPosts ({ commit }) {
       try {
+        if (!localStorage.getItem('authToken')) {
+          router.push('/home')
+        }
         const response = await axios.get('http://localhost:3000/api/post/', {
           headers: {
-            authorization: 'Bearer ' + localStorage.getItem('token')
+            authorization: 'Bearer ' + localStorage.getItem('authToken')
           }
         })
         commit('All_Posts', response.data)
@@ -174,9 +207,9 @@ export default new Vuex.Store({
     },
     async getOnePost ({ commit }, data) {
       try {
-        const response = await axios.get(`http://localhost:3000/api/post/postModal/${data.title}/`, data, {
+        const response = await axios.get(`http://localhost:3000/api/post/postModal/${data.id}/`, data, {
           headers: {
-            authorization: 'Bearer ' + localStorage.getItem('token')
+            authorization: 'Bearer ' + localStorage.getItem('authToken')
           }
         })
         commit('View_Post', response.data)
@@ -205,6 +238,26 @@ export default new Vuex.Store({
         })
         commit('All_Comments', response.data)
         localStorage.setItem('comments', JSON.stringify(response.data))
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async login ({ commit }, data) {
+      try {
+        const response = await axios.post('http://localhost:3000/api/auth/login', {
+          email: data.email,
+          password: data.password
+        },
+        {
+          headers: {
+            authorization: 'Bearer ' + localStorage.getItem('authToken')
+          }
+        })
+        const authToken = await response.data.authToken
+        const user = await response.data.user
+        localStorage.setItem('authToken', JSON.stringify(authToken))
+        localStorage.setItem('user', JSON.stringify(user))
+        commit('auth_successful', { user, authToken })
       } catch (error) {
         console.log(error)
       }

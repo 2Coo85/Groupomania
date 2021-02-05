@@ -1,32 +1,17 @@
 <template>
-  <div id="app">
+  <div id="app" class="container-fluid">
     <NavBar/>
     <router-view/>
   </div>
 </template>
 
 <script>
-import NavBar from '@/components/NavBar'
-import { mapState, mapActions } from 'vuex'
+import NavBar from './components/NavBar'
+
 export default {
-  name: 'navbar',
+  name: 'app',
   components: {
     NavBar
-  },
-  computed: {
-    ...mapActions([
-      'loadAllPosts',
-      'loadAllComments',
-      'getUser',
-      'getOnePost',
-      'addNewComment'
-    ]),
-    ...mapState([
-      'departments',
-      'posts',
-      'comments',
-      'user'
-    ])
   }
 }
 </script>
@@ -41,7 +26,8 @@ html, #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  display: flex;
+  flex-flow: column wrap;
 }
 
 </style>

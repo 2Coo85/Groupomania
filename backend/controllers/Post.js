@@ -1,58 +1,55 @@
 const Post = require('../models/post');
-const fs = require('fs');
 
-exports.createTextPost = (req, res, next) => {
-    req.body.post = JSON.parse(req.body.post);
-    const post = new Post({
-        userId: req.body.post.userId,
-        userName: req.body.post.userName,
-        department: req.body.post.department,
-        title: req.body.post.title,
-        postText: req.body.post.postText,
-        commentsPosted: 0,
-        usersCommented: req.body.post.usersCommented
-    });
-    post.save().then(
-        () => {
-            res.status(201).json({
-                message: 'Post added to database successfully!'
-            });
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
-};
-
-exports.createMediaPost = (req, res, next) => {
-    req.body.post = JSON.parse(req.body.post);
+exports.createPost = (req, res, next) => {
+    //req.body.post = JSON.parse(req.body.post);
     const url = req.protocol + '://' + req.get('host');
-    const post = new Post({
-        userName: req.body.post.userName,
-        department: req.body.post.department,
-        mediaUrl: url + '/media/' + req.file.filename,
-        title: req.body.post.title,
-        file: req.body.post.file,
-        commentsPosted: 0,
-        usersCommented: req.body.post.usersCommented
-    });
-    post.save().then(
-        () => {
-            res.status(201).json({
-                message: 'Post added to database successfully!'
-            });
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
-}
+    if (req.file) {
+        const post = new Post({
+            userId: req.body.userId,
+            username: req.body.username,
+            department: req.body.department,
+            title: req.body.title,
+            mediaUrl: url + '/media/' + req.file.filename
+            //usersCommented: req.body.post.usersCommented
+        });
+        post.save().then(
+            () => {
+                res.status(201).json({
+                    message: 'Post and media added to database successfully!'
+                });
+            }
+        ).catch(
+            (error) => {
+                res.status(400).json({
+                    error: error
+                });
+            }
+        ); 
+    } else {
+        const post = new Post({
+            userId: req.body.userId,
+            username: req.body.username,
+            department: req.body.department,
+            title: req.body.title,
+            postText: req.body.postText
+            //usersCommented: req.body.post.usersCommented
+        });
+        post.save().then(
+            () => {
+                res.status(201).json({
+                    message: 'Post added to database successfully!'
+                });
+            }
+        ).catch(
+            (error) => {
+                res.status(400).json({
+                    error: error
+                });
+            }
+        );
+    }
+    
+};
 
 exports.getOnePost = (req, res, next) => {
     Post.findOne({
@@ -70,26 +67,6 @@ exports.getOnePost = (req, res, next) => {
         }
     );
 };
-
-exports.countComment = (req, res, next) => {
-    Post.findOne({_id: req.params.id}).then((post) => {
-        post.usersCommented.push(req.body.userId);
-        post.commentsPosted++;
-        post.save().then(
-            () => {
-                res.status(200).json({
-                    message: 'Comment added succesfully'
-                });
-            }
-        ).catch(
-            (error) => {
-                res.status(400).json({
-                    error: error
-                });
-            }
-        );
-    });
-}
 
 exports.showAllPosts = (req, res, next) => {
     Post.find().then(

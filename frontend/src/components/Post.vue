@@ -2,9 +2,10 @@
     <div id="post">
         <b-card v-b-modal.postModal>
             <b-card-body>
-                <b-card-title>Card Title</b-card-title>
-                <b-card-sub-title class="mb-2">Card Sub Title</b-card-sub-title>
-                <b-card-text>Some quick example text to build on the card title and make up the bulk of the card's content.</b-card-text>
+                <h5 v-if="post.title">{{ post.title}}</h5>
+                <h6 v-if="post.userName">{{post.userName}}</h6><h6 v-if="post.department">{{ post.department }}</h6>
+                <p v-if="post.postText">{{ post.postText }}</p>
+                <img v-if="post.mediaUrl" :src="post.mediaUrl" alt="image/video">
             </b-card-body>
             <b-dropdown id="comment-dropdown" text="Click here to comment">
                 <b-card-body id="comment-card">
@@ -19,14 +20,14 @@
             <div role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{{ department }} / {{ username }}</h5>
-                        <h6 class="modal-title">{{ title }}</h6>
+                        <h5 class="modal-title">{{ post.department }} / {{ post.userName }}</h5>
+                        <h6 class="modal-title">{{ post.title }}</h6>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                     </div>
                     <div class="modal-body">
-                        {{ body }}
+                        {{ post.postText }}
                     </div>
                     <div class="modal-footer">
                         <b-card-body id="comment-card">
@@ -47,7 +48,7 @@
 
 <script>
 export default {
-  props: ['title', 'department', 'username', 'body', 'comments']
+  props: ['post', 'comments']
 }
 </script>
 

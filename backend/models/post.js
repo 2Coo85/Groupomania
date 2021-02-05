@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 
 const postSchema = mongoose.Schema({
-    userId: {type: 'String'},
-    userName: {type: 'String', required: true},
-    department: {type: 'String', required: true},
-    title: {type: 'String', required: true},
-    mediaUrl: {type: 'String'},
-    postText: {type: 'String'},
-    commentsPosted: {type: 'Number'},
+    userId: {type: String},
+    username: {type: String, required: true},
+    department: {type: String, required: true},
+    title: {type: String, required: true},
+    mediaUrl: {type: String},
+    postText: {type: String},
     usersCommented: {type: [String]}
 });
 

@@ -19,19 +19,25 @@
         <h1>User Account</h1>
         <form id="account-form">
             <label for="UserName">Username: </label>
-            <p id="UserName"> {{ username }}</p>
-            <label for="password-current">Password: </label>
-            <p id="password-current">*******</p>
+            <p id="UserName"> {{ getUserName }}</p>
             <label for="dept">Department</label>
-            <p id="dept">{{ department }}</p>
-            <label for="phone">Phone: </label>
-            <p id="phone">{{ phone }}</p>
+            <p id="dept">{{ getDepartment }}</p>
+            <label for="email">Email: </label>
+            <p id="email">{{ getEmail }}</p>
         </form>
         </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  props: ['username', 'department', 'phone']
+  computed: {
+    ...mapGetters([
+      'getUserName',
+      'getDepartment',
+      'getEmail'
+    ])
+  }
 }
 </script>

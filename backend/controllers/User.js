@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-let randtoken = require('random-token');
+//let randtoken = require('random-token');
 
 exports.signUp = (req, res, next) => {
     bcrypt.hash(req.body.password, 10).then(
@@ -10,7 +10,7 @@ exports.signUp = (req, res, next) => {
                 username: req.body.username,
                 password: hash,
                 department: req.body.department,
-                email: req.body.department
+                email: req.body.email
             });
             user.save().then(
                 () => {
@@ -26,11 +26,12 @@ exports.signUp = (req, res, next) => {
                 }
             );
         }
+        
     );
 };
 
 exports.logIn = (req, res, next) => {
-    User.findOne({username: req.body.username}).then(
+    User.findOne({email: req.body.email}).then(
         (user) => {
             if (!user) {
                 return res.status(401).json({
@@ -44,18 +45,19 @@ exports.logIn = (req, res, next) => {
                             error: new Error("Incorrect password entered")
                         });
                     }
-                    const token = jwt.sign(
-                    randtoken.generate(16),
+                    const authToken = jwt.sign({userId: user._id}, 
+                    "RANDOM_TOKEN",
                     {expiresIn: '12h'});
                     res.status(200).json({
                         userId: user._id,
-                        token: token
+                        authToken: authToken,
+                        user: user
                     });
                 }
             ).catch(
                 (error) => {
                     res.status(500).json({
-                        error: error
+                        error: new Error('first error')
                     });
                 }
             );
@@ -63,7 +65,7 @@ exports.logIn = (req, res, next) => {
     ).catch(
         (error) => {
             res.status(500).json({
-                error: error
+                error: new Error('second error')
             });
         }
     );
@@ -74,21 +76,15 @@ exports.updateUser = (req, res, next) => {
     if (user) {
         req.body.user = JSON.parse(req.body.user);
         user = {
-            username: req.body.user.username,
             department: req.body.user.department,
-            phone: req.body.user.phone,
-            email: req.body.user.email,
-            name: req.body.user.name
+            email: req.body.user.email
         };
     } else {
-        User.findOne({_id: req.params._id}).then(
+        User.findOne({_id: req.params.id}).then(
             () => {
                 user = {
-                    username: req.body.username,
                     department: req.body.department,
-                    phone: req.body.phone,
-                    email: req.body.email,
-                    name: req.body.name
+                    email: req.body.email
                 };
                 User.updateOne({_id: req.params.id}, user).then(
                     () => {
@@ -115,7 +111,7 @@ exports.updateUser = (req, res, next) => {
 };
 
 exports.deleteUser = (req, res, next) => {
-    User.findOneAndDelete({username: req.body.username}).then(
+    User.deleteOne({_id: req.body.id}).then(
         () => {
             res.status(200).json({
                 message: 'User deleted'

@@ -1,14 +1,14 @@
 <template>
     <div>
-        <b-modal id="signUp" busy title="Create your Profile">
-            <form @submit.stop.prevent="signUp">
+        <b-modal id="signUp" busy title="Create your Profile" hide-footer no-stacking>
+            <form @submit.prevent="newUser()">
                 <div class="form-group">
-                        <label for="username">Username: </label>
-                        <validation-provider rules="required" v-slot="{ errors }">
-                            <input id="username" type="text" minlength="6" maxlength="8" v-model="username">
-                            <p><small>Must be between 6-8 characters; not case sensitive</small></p>
-                            <span>{{ errors[0] }}</span>
-                        </validation-provider>
+                    <label for="username">Username: </label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                        <input id="username" type="text" minlength="6" maxlength="8" v-model="username">
+                        <p><small>Must be between 6-8 characters; not case sensitive</small></p>
+                        <span>{{ errors[0] }}</span>
+                    </validation-provider>
                 </div>
                 <div class="form-group">
                     <validation-provider rules="required" v-slot="{ errors }">
@@ -33,10 +33,10 @@
                         <span>{{ errors[0] }}</span>
                     </validation-provider>
                 </div>
+                <div class="form-group">
+                    <b-button type='submit' class='btn btn-primary form-control' :disabled='!isFilledOut' @click="showDoneMsg">Complete sign up</b-button>
+                </div>
             </form>
-            <template #modal-footer>
-                <button type='submit' class='btn btn-primary' :disabled='!isFilledOut'>Complete sign up</button>
-            </template>
         </b-modal>
     </div>
 </template>
@@ -65,18 +65,25 @@ export default {
     }
   },
   methods: {
-    async signUp () {
+    async newUser () {
       try {
-        await this.$store.dispatch('signUp', {
+        await this.$store.dispatch('newUser', {
           username: this.username,
           email: this.email,
           department: this.department,
           password: this.password
         })
-        this.$router.push('/home')
+        this.$router.push('/')
       } catch (error) {
         console.log(error)
       }
+    },
+    async submitBtn (event) {
+      event.preventDefault()
+      this.signUp()
+    },
+    showDoneMsg () {
+      this.$bvModal.msgBoxOk('You have registered successfully. Return to main page to sign in')
     }
   },
   computed: {
