@@ -1,8 +1,7 @@
 <template>
     <div id="main-nav">
-        <b-navbar>
-            <b-navbar-brand href="/home">
-                <b-img :src="require('../assets/icon-left-font-monochrome-black.png')" height="75"></b-img>
+        <b-navbar id="app-navbar">
+            <b-navbar-brand href="/home"><b-img :src="require('../assets/icon.jpg')" height="50"></b-img>
             </b-navbar-brand>
             <b-navbar-toggle target="navbar-toggle-collapse">
                 <template #default="{ expanded }">
@@ -11,7 +10,7 @@
                 </template>
             </b-navbar-toggle>
             <b-collapse id="navbar-toggle-collapse" is-nav>
-                <b-dropdown text="Dept" right class="mr-3">
+                <b-dropdown text="Departments" right class="mr-3">
                     <b-dropdown-item href="/salesMarketing">Sales and Marketing</b-dropdown-item>
                     <b-dropdown-item href="/retailops">Retail Operations</b-dropdown-item>
                     <b-dropdown-item href="/hr">HR</b-dropdown-item>
@@ -20,8 +19,8 @@
                 <b-dropdown text="User" right class="mr-3">
                     <b-dropdown-item href="/settings">Account</b-dropdown-item>
                     <b-dropdown-item href="/savedPosts">Saved Posts</b-dropdown-item>
+                    <b-dropdown-item @click="logOut">Log Out</b-dropdown-item>
                 </b-dropdown>
-                <b-button class="btn" @click="logOut">Log Out</b-button>
             </b-collapse>
         </b-navbar>
     </div>
@@ -61,8 +60,10 @@ export default {
 
 <style lang="scss">
     #main-nav{
-        background-color: #dadada;
         color: black;
-        border: #d1515a 2px solid;
+        border-bottom: #d1515a 5px solid;
+    }
+    #app-navbar {
+        background: linear-gradient(120deg,  #ced6dd, #091f43)
     }
 </style>

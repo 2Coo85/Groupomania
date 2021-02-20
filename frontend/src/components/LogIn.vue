@@ -4,7 +4,7 @@
             <ValidationObserver v-slot="{ handleSubmit }">
             <b-form @submit.prevent='handleSubmit(login())'>
                 <b-form-group label="Email" label-for="form-email" >
-                    <validation-provider rules="required|email|{regex: /^[A-Za-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2}$/}" v-slot="{ errors }" name="email">
+                    <validation-provider rules="required|email" v-slot="{ errors }" name="email">
                         <b-form-input
                             v-model="email"
                             id="form-email"
@@ -36,16 +36,14 @@
 
 <script>
 import { ValidationProvider, extend, ValidationObserver } from 'vee-validate'
-import { required, email, regex } from 'vee-validate/dist/rules'
-
-extend('regex', regex)
-
-extend('email', email)
+import { required, email } from 'vee-validate/dist/rules'
 
 extend('required', {
   ...required,
   message: 'Required field'
 })
+
+extend('email', email)
 
 export default {
   components: {
@@ -64,11 +62,7 @@ export default {
         await this.$store.dispatch('login', {
           email: this.email,
           password: this.password
-        }).then(
-            (response) => {
-              this.$router.push('/home')  
-            }
-        )
+        })
       } catch (error) {
         this.error.add({
           field: 'password',

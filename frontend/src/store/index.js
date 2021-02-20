@@ -258,6 +258,7 @@ export default new Vuex.Store({
         localStorage.setItem('authToken', JSON.stringify(authToken))
         localStorage.setItem('user', JSON.stringify(user))
         commit('auth_successful', { user, authToken })
+        router.push('/home')
       } catch (error) {
         console.log(error)
       }

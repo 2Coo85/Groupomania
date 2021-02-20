@@ -1,48 +1,28 @@
 <template>
-    <div id="post">
-        <b-card v-b-modal.postModal>
-            <b-card-body>
-                <h5 v-if="post.title">{{ post.title}}</h5>
-                <h6 v-if="post.userName">{{post.userName}}</h6><h6 v-if="post.department">{{ post.department }}</h6>
-                <p v-if="post.postText">{{ post.postText }}</p>
-                <img v-if="post.mediaUrl" :src="post.mediaUrl" alt="image/video">
-            </b-card-body>
-            <b-dropdown id="comment-dropdown" text="Click here to comment">
-                <b-card-body id="comment-card">
-                    <b-card-title>Comments</b-card-title>
-                    <b-textarea id="comments" rowspan="20" colspan="15" placeholder="Enter comments here..."></b-textarea>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </b-card-body>
-            </b-dropdown>
-        </b-card>
-        <!-- Modal -->
-        <b-modal class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId">
-            <div role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{{ post.department }} / {{ post.userName }}</h5>
-                        <h6 class="modal-title">{{ post.title }}</h6>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+    <div id="post" class="container-fluid mt-100">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="media flex-wrap w-100 align-items-center"> 
+                            <div class="media-body ml-3"> <a href="javascript:void(0)" data-abc="true">{{ post.username }}</a>
+                                <div class="text-muted small">{{ post.department }}</div>
+                            </div>
+                            <div class="text-muted small ml-3">
+                                <div>{{ post.title }}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        {{ post.postText }}
+                    <div class="card-body">
+                        <p>{{ post.content }}</p>
                     </div>
-                    <div class="modal-footer">
-                        <b-card-body id="comment-card">
-                            <b-card-title>Comments</b-card-title>
-                            <b-textarea id="comments" rowspan="20" colspan="15" placeholder="Enter comments here..."></b-textarea>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </b-card-body>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                    <div id="allComments">
-                        {{ comments }}
+                    <div class="card-footer d-flex flex-wrap justify-content-between align-items-center px-0 pt-0 pb-3">
+                        <input type="text" class="form-control" placeholder="Enter your comment...">
+                        <div class="px-4 pt-3"> <button type="button" class="btn btn-primary"><i class="ion ion-md-create"></i>&nbsp; Comment</button> </div>
                     </div>
                 </div>
             </div>
-        </b-modal>
+        </div>
     </div>
 </template>
 
@@ -53,8 +33,60 @@ export default {
 </script>
 
 <style lang="scss">
-    #comment-card {
-        width: 500px;
+    .mt-100 {
+        margin-top: 100px
+    }
+
+    .card {
+        box-shadow: 0 0.46875rem 2.1875rem rgba(4, 9, 20, 0.03), 0 0.9375rem 1.40625rem rgba(4, 9, 20, 0.03), 0 0.25rem 0.53125rem rgba(4, 9, 20, 0.05), 0 0.125rem 0.1875rem rgba(4, 9, 20, 0.03);
+        border-width: 0;
+        transition: all .2s
+    }
+
+    .card-header:first-child {
+        border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        border-bottom-width: 1px;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-right: .625rem;
+        height: 3.5rem;
+        text-transform: uppercase;
+        background-color: #fff;
+        border-bottom: 1px solid rgba(26, 54, 126, 0.125)
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #3f6ad8;
+        border-color: #3f6ad8
+    }
+
+    .btn {
+        font-size: 0.8rem;
+        font-weight: 500;
+        outline: none !important;
+        position: relative;
+        transition: color 0.15s, background-color 0.15s, border-color 0.15s, box-shadow 0.15s
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        padding: 1.25rem
+    }
+
+    .card-body p {
+        font-size: 13px
+    }
+
+    a {
+        color: #E91E63;
+        text-decoration: none !important;
+        background-color: transparent
     }
     #post {
         width:80%;

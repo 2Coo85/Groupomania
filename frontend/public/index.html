@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- Custom -->
+    <link href="css/custom.css" rel="stylesheet">
+
+    <!-- CSS STYLE-->
+    <link rel="stylesheet" type="text/css" href="./css/style.css" media="screen" />
+
+    <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
+    <link rel="stylesheet" type="text/css" href="./rs-plugin/css/settings.css" media="screen" />
+
+    <!-- fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="./font-awesome-4.0.3/css/font-awesome.min.css">
+
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
@@ -13,5 +30,34 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+
+    <!-- get jQuery from the google apis -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+ 
+
+    <!-- SLIDER REVOLUTION 4.x SCRIPTS  -->
+    <script type="text/javascript" src="rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
+    <script type="text/javascript" src="rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+
+
+    <!-- LOOK THE DOCUMENTATION FOR MORE INFORMATIONS -->
+    <script type="text/javascript">
+        
+        var revapi;
+
+        jQuery(document).ready(function() {
+            "use strict";
+            revapi = jQuery('.tp-banner').revolution(
+                    {
+                        delay: 15000,
+                        startwidth: 1200,
+                        startheight: 278,
+                        hideThumbs: 10,
+                        fullWidth: "on"
+                    });
+
+        });	//ready
+
+    </script>
   </body>
 </html>
