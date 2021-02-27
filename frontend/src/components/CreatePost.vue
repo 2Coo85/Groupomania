@@ -1,40 +1,51 @@
 <template>
-    <div class="container-fluid">
-    <div class="row" id="create-post">
-        <div class="post-form" @submit.prevent="createPost()">
-            <div class="row px-3 post-header">
-                <div class="col-md-12 col-sm-12">
-                    <label for="title">Title: </label>
-                    <input name="title" type="text" v-model="title">
+    <div>
+      <div class="mt-2 mb-5" id="create-post">
+        <ValidationObserver v-slot="{ handleSubmit }">
+          <b-form id="postForm" class="post-form py-2 pl-3" @submit.prevent="handleSubmit(createPost())">
+              <b-form-group class="row post-header">
+                  <div>
+                      <label for="title">Title: </label>
+                      <b-form-input name="title" type="text" v-model="title"></b-form-input>
+                  </div>
+                  <div>
+                      <label for="department">Dept: </label>
+                      <b-form-select size='sm' v-model="department" name="department"
+                          :options="[{text: 'Choose department', value: null},  'HR', 'Sales and Marketing', 'Retail Operations', 'Management']" :value='null'>
+                      </b-form-select>
+                  </div>
+              </b-form-group>
+              <b-form-group class="row px-5 post-header">
+                <div>
+                  <b-form-textarea class="text-muted bg-light col-12 mt-2 mb-1" placeholder="what's on your mind today?" name="postText" v-model="postText"></b-form-textarea>
                 </div>
-                <div class="col-md-12 col-sm-12">
-                    <label for="department">Dept: </label>
-                    <select v-model="department" name="department">
-                        <option value="">Choose your department</option>
-                        <option v-for="dept in getDepartment" :key="dept.id" :value="dept">{{ dept }}</option>
-                    </select>
+              </b-form-group>
+              <b-form-group class="row post-header">
+                <div>
+                  <p class="fa fa-user options mb-0 mr-4"></p>
+                  <p class="fa fa-image options mb-0 mr-4"></p> <img class="options" src="https://img.icons8.com/material/24/000000/more--v2.png" width="30px" height="28px">
                 </div>
-            </div>
-            <div class="row form-group">
-                <textarea class="text-muted bg-light mt-2 mb-1" placeholder="what's on your mind today?" name="postText" v-model="postText"></textarea>
-            </div>
-            <div class="row">
-                <p class="fa fa-user options mb-0 mr-4"></p>
-                <p class="fa fa-image options mb-0 mr-4"></p> <img class="options" src="https://img.icons8.com/material/24/000000/more--v2.png" width="30px" height="28px">
-                <div class="col-md-6">
-                <input id="fileId"  name="file-field" type="file" ref="file" class="form-control-file" accept="image/png, image/jpeg, video/mpeg, image/jpg" />
-            </div>
-                <div><button type="submit" name="post-btn" :disabled='isPostComplete' @click="submitPost()">Post</button></div>
-            </div>
-        </div>
-    </div>
-</div>
+                <div>
+                  <b-form-file id="fileId"  name="file-field" type="file" ref="file" class="form-control-file" accept="image/png, image/jpeg, video/mpeg, image/jpg" @click="$ref.file.click()"/>
+                </div>
+                  <div>
+                    <b-button type="submit" name="post-btn" class="form-control btn-submit" @submit="createPost">Post</b-button>
+                  </div>
+              </b-form-group>
+          </b-form>
+        </ValidationObserver>
+      </div>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { ValidationObserver } from 'vee-validate'
 
 export default {
+  components: {
+    ValidationObserver
+  },
   data () {
     return {
       fileName: '',
@@ -47,43 +58,29 @@ export default {
   computed: {
     ...mapGetters([
       'getDepartment'
-    ]),
-    isPostComplete () {
-      return this.title && this.department && (this.postText || this.file)
-    }
+    ])
   },
   methods: {
-    async createPost () {
+    async createPost (response) {
       try {
         this.file = this.$refs.file.files[0]
+        const data = new FormData();
+        data.append("postText", this.postText);
+        data.append("title", this.title);
+        data.append("department", this.department)
+        data.append("file", this.file);
+        data.append("userId", this.userId);
+        data.append("username", this.username);
         if (this.file) {
-          const postData = await this.$store.dispatch('createPost', {
-            userId: this.userId,
-            username: this.username,
-            title: this.title,
-            department: this.department,
-            file: this.file
-          })
-          this.$store.dispatch('getAllPosts')
+          response = await this.$store.dispatch('createPost', data)
+          this.$store.dispatch('loadAllPosts')
           this.fileName = ''
-          this.postData = postData
         } else if (this.postText) {
-          const postData = this.$store.dispatch('createPost',
-            {
-              userId: this.userId,
-              username: this.username,
-              title: this.title,
-              department: this.department,
-              postText: this.postText
-            })
-          this.$store.dispatch('getAllPosts')
+          response = this.$store.dispatch('createPost', data)
+          this.$store.dispatch('loadAllPosts')
           this.postText = ''
-          this.postData = postData
         } else {
-          this.errors.add({
-            field: 'file-field',
-            msg: 'Text or an image is required'
-          })
+          console.log('not posted')
           this.fileName = ''
           this.postText = ''
         }
@@ -94,8 +91,9 @@ export default {
         console.log(error)
       }
     },
-    async submitPost () {
-      this.createPost()
+    onSubmit (event) {
+      this.$emit('submit', response.data)
+      console.log('post submitted')
     }
   }
 }
@@ -104,22 +102,8 @@ export default {
 <style lang="scss">
     #create-post {
         border-radius: 10px;
-        width: 100%;
         color: black;
         background-color: rgb(221, 221, 221);
-        display: flex;
-        flex-flow: column;
-        justify-content: center;
-        align-items: center;
-    }
-    #create-post textarea {
-        border-radius: 10px;
-        color: #616161;
-        border: 1px solid #F5F5F5;
-        font-size: 16px;
-        letter-spacing: 1px;
-        height: 150px;
-        width: 100%;
     }
     #create-post textarea:focus {
         -moz-box-shadow: none !important;
@@ -127,10 +111,6 @@ export default {
         box-shadow: none !important;
         border: 1px solid #00C853 !important;
         outline-width: 0 !important
-    }
-    #create-post select {
-        font-size: 15px;
-        background-color: #fff !important
     }
     .post-header {
         display: flex;

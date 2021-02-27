@@ -4,6 +4,7 @@ import axios from 'axios'
 import router from '../router'
 
 Vue.use(Vuex)
+Vue.use(axios)
 
 export default new Vuex.Store({
   state: {
@@ -15,18 +16,14 @@ export default new Vuex.Store({
     ],
     posts: [],
     savedPosts: [],
-    users: [],
     oneUser: [],
     authToken: localStorage.getItem('authToken') || null,
     department: [],
-    user: localStorage.getItem('user') || null,
-    comments: [],
-    email: [],
-    username: []
+    user: localStorage.getItem('user') || null
   },
   getters: {
     getUserName: (state) => {
-      return state.username
+      return state.user.username
     },
     getUserId: (state) => {
       return state.user._id
@@ -61,13 +58,13 @@ export default new Vuex.Store({
     getSavedPosts: (state) => {
       return state.savedPosts
     },
-    getAllComments: (state) => {
-      return state.comments
+    getAuthToken: (state) => {
+      return state.authToken
     }
   },
   mutations: {
-    Set_Users: (state, users) => {
-      return state.users
+    Set_Users: (state, user) => {
+      return state.user
     },
     Delete_User: (state) => {
       state.authToken = null
@@ -87,24 +84,18 @@ export default new Vuex.Store({
         state.department.push({
           department: dept.department,
           username: dept.username,
-          postTitle: dept.title
+          title: dept.title
         })
       }
     },
     setSavedPosts: (state, savedPosts) => {
       state.savedPosts.push(savedPosts)
     },
-    Create_Post: (state, post) => {
-      return state.posts.unshift(post)
+    Create_Post: (state, posts) => {
+      return state.posts.unshift(posts)
     },
     All_Posts: (state, posts) => {
       state.posts = posts
-    },
-    All_Comments: (state, comments) => {
-      state.comments = comments
-    },
-    Add_Comment: (state, comment) => {
-      return state.comments.unshift(comment)
     },
     View_Post: (state, currentPost) => {
       const index = state.posts.findIndex((post) => post.id === currentPost.id)
@@ -170,12 +161,14 @@ export default new Vuex.Store({
     },
     async createPost ({ commit }, data) {
       try {
-        const response = await axios.post('http://localhost:3000/api/post', data, {
-          headers: {
-            authorization: 'Bearer ' + localStorage.getItem('authToken')
-          }
-        })
-        commit('Create_Post', response.data)
+        const response = await axios.post('http://localhost:3000/api/post/', data,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + localStorage.getItem('authToken')
+            }
+          })
+        commit('Create_Post', JSON.stringify(JSON.parse(response.data)))
       } catch (error) {
         console.log(error)
       }
@@ -199,7 +192,9 @@ export default new Vuex.Store({
             authorization: 'Bearer ' + localStorage.getItem('authToken')
           }
         })
-        commit('All_Posts', response.data)
+        const posts = await response.data
+        commit('All_Posts', posts)
+        commit('setDept', posts)
         localStorage.setItem('posts', JSON.stringify(response.data))
       } catch (error) {
         console.log(error)

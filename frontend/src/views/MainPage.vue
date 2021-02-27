@@ -16,15 +16,13 @@
         <!-- //Slider -->
             <section>
                 <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12">
+                    <div class="row my-0 mx-auto">
+                        <div class="col-lg-12 col-md-12 col-sm-12 ml-5">
                             <CreatePost/>
                         </div>
-                        <div class="clearfix"></div>
                     </div>
                 </div>
             </section>
-            
 
             <section class="content">
                 <div class="container">
@@ -38,15 +36,8 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <!-- POST -->
-                            <div class="post" v-for="post in posts" :key="post._id">
-                                <div class="wrap-ut pull-left">
-                                    <div class="posttext">
-                                        <h2><a href="02_topic.html">{{ post.title }}</a></h2>
-                                    </div>
-                                </div>
-                                <div class="ml-2 my-1 pull-left" style="color: black">
-                                    <p>Dept: {{ post.department }} </p><p>Posted by tu3050</p>
-                                </div>
+                            <div class="post" v-for="post in posts" :key="post.id">
+                                <Post :post="post" />
                                 <div class="postinfo pull-left">
                                     <div class="comments">
                                         <div class="commentbg">
@@ -288,9 +279,22 @@
 
 <script>
 import CreatePost from '../components/CreatePost.vue'
+import Post from '../components/Post.vue'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
-  components: { CreatePost },
+  components: { CreatePost, Post },
+  computed: {
+    ...mapGetters([
+      'getAllPosts'
+    ]),
+    loadAllPosts () {
+      return this.getAllPosts
+    },
+    ...mapState([
+      'posts'
+    ])
+  },
   methods: {
     logOut () {
       this.$swal({
@@ -318,8 +322,7 @@ export default {
       currentPage: 1,
       title: '',
       department: '',
-      postText: '',
-      posts: []
+      postText: ''
     }
   }
 }

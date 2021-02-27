@@ -9,6 +9,7 @@ import PostsSaved from '../views/PostsRead.vue'
 import Settings from '../views/UserSettings.vue'
 import Main from '../views/MainPage.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [

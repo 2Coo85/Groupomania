@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <div class="media flex-wrap w-100 align-items-center"> 
+                        <div class="media flex-wrap w-100 align-items-center">
                             <div class="media-body ml-3"> <a href="javascript:void(0)" data-abc="true">{{ post.username }}</a>
                                 <div class="text-muted small">{{ post.department }}</div>
                             </div>
@@ -14,7 +14,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <p>{{ post.content }}</p>
+                        <p v-if="post.postText">{{ post.postText }}</p>
+                        <img v-if="post.mediaUrl" :src="post.mediaUrl" alt="media" class="image">
                     </div>
                     <div class="card-footer d-flex flex-wrap justify-content-between align-items-center px-0 pt-0 pb-3">
                         <input type="text" class="form-control" placeholder="Enter your comment...">

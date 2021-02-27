@@ -48,7 +48,6 @@ exports.createPost = (req, res, next) => {
             }
         );
     }
-    
 };
 
 exports.getOnePost = (req, res, next) => {
