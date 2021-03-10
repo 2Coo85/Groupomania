@@ -8,6 +8,7 @@ const postSchema = mongoose.Schema({
     mediaUrl: {type: String},
     postText: {type: String},
     usersCommented: {type: [String]}
-});
+}, { collection: 'posts' }
+);
 
 module.exports = mongoose.model('Post', postSchema);

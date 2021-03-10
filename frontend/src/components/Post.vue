@@ -2,14 +2,11 @@
     <div id="post" class="container-fluid mt-100">
         <div class="row">
             <div class="col-md-12">
-                <div class="card mb-4">
+                <div class="card mb-1">
                     <div class="card-header">
-                        <div class="media flex-wrap w-100 align-items-center">
-                            <div class="media-body ml-3"> <a href="javascript:void(0)" data-abc="true">{{ post.username }}</a>
-                                <div class="text-muted small">{{ post.department }}</div>
-                            </div>
-                            <div class="text-muted small ml-3">
-                                <div>{{ post.title }}</div>
+                        <div class="flex-wrap w-100">
+                            <div class="media-body ml-3"> <a href="" data-abc="true">{{ post.title }}</a>
+                                <div class="text-muted small">{{ post.department }} / {{ post.username }}</div>
                             </div>
                         </div>
                     </div>
@@ -77,11 +74,12 @@ export default {
 
     .card-body {
         flex: 1 1 auto;
-        padding: 1.25rem
+        padding: .25rem;
+        color: black
     }
 
     .card-body p {
-        font-size: 13px
+        font-size: 1em
     }
 
     a {
@@ -90,10 +88,7 @@ export default {
         background-color: transparent
     }
     #post {
-        width:80%;
-        position: relative;
-        top: 10%;
-        left: 10%;
+        width: 100%;
         box-shadow: 2px 2px 5px gray;
     }
 </style>

@@ -61,22 +61,49 @@ export default {
     ])
   },
   methods: {
-    async createPost (response) {
+    async createPost () {
       try {
         this.file = this.$refs.file.files[0]
-        const data = new FormData();
-        data.append("postText", this.postText);
-        data.append("title", this.title);
-        data.append("department", this.department)
-        data.append("file", this.file);
-        data.append("userId", this.userId);
-        data.append("username", this.username);
         if (this.file) {
-          response = await this.$store.dispatch('createPost', data)
+          await this.$store.dispatch('createPost',
+            {
+              userId: this.$store.state.user._id,
+              username: this.$store.state.user.username,
+              title: this.title,
+              department: this.department,
+              file: this.file
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+              }
+            }).then(
+            (response) => {
+              console.log(response)
+            }
+          )
           this.$store.dispatch('loadAllPosts')
           this.fileName = ''
         } else if (this.postText) {
-          response = this.$store.dispatch('createPost', data)
+          await this.$store.dispatch('createPost',
+            {
+              userId: this.$store.state.user._id,
+              username: this.$store.state.user.username,
+              title: this.title,
+              department: this.department,
+              postText: this.postText
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+              }
+            }).then(
+            (response) => {
+              console.log(response)
+            }
+          )
           this.$store.dispatch('loadAllPosts')
           this.postText = ''
         } else {
@@ -91,8 +118,7 @@ export default {
         console.log(error)
       }
     },
-    onSubmit (event) {
-      this.$emit('submit', response.data)
+    onSubmit () {
       console.log('post submitted')
     }
   }

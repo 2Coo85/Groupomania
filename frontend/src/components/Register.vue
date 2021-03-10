@@ -20,6 +20,13 @@
                     </validation-provider>
                 </div>
                 <div class="form-group">
+                  <label for="phone">Work Number: </label>
+                  <validation-provider rules="required" v-slot="{ errors }">
+                    <input type="phone" class="form-control" name="phoneNumber" id="workNumber" placeholder="Enter work number" v-model="phone">
+                    <span>{{ errors[0] }}</span>
+                  </validation-provider>
+                </div>
+                <div class="form-group">
                     <label for="email">Email: </label>
                     <validation-provider rules="required" v-slot="{ errors }">
                         <input type="email" class="form-control" name="email" id="email" placeholder="Enter your work email here" v-model="email">
@@ -61,6 +68,7 @@ export default {
       department: '',
       username: '',
       password: '',
+      phone: '',
       busy: true
     }
   },
@@ -71,7 +79,8 @@ export default {
           username: this.username,
           email: this.email,
           department: this.department,
-          password: this.password
+          password: this.password,
+          phone: this.phone
         })
         this.$router.push('/')
       } catch (error) {

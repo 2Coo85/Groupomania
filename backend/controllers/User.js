@@ -10,7 +10,8 @@ exports.signUp = (req, res, next) => {
                 username: req.body.username,
                 password: hash,
                 department: req.body.department,
-                email: req.body.email
+                email: req.body.email,
+                phone: req.body.phone
             });
             user.save().then(
                 () => {
@@ -46,8 +47,8 @@ exports.logIn = (req, res, next) => {
                         });
                     }
                     const authToken = jwt.sign({userId: user._id}, 
-                    "RANDOM_TOKEN",
-                    {expiresIn: '12h'});
+                    "newKey",
+                    {expiresIn: '24h'});
                     res.status(200).json({
                         userId: user._id,
                         authToken: authToken,
