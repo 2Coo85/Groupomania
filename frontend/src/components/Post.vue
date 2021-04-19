@@ -1,61 +1,141 @@
 <template>
-    <div id="post" class="container-fluid mt-100">
+    <div id="post" class="container-fluid mt-5">
         <div class="row">
             <div class="col-md-12">
-                <div class="card mb-1">
-                    <div class="card-header">
-                        <div class="flex-wrap w-100">
-                            <div class="media-body ml-3"> <a href="" data-abc="true">{{ post.title }}</a>
-                                <div class="text-muted small">{{ post.department }} / {{ post.username }}</div>
+              <b-card class="mb-1">
+                    <b-card-header>
+                        <header class="0w-100">
+                            <div class="ml-3">
+                                <b-button id="postBtn" class="mb-4" @click="$bvModal.show('post-detail')"><h6 id="postTitle" @click="readPost()">{{ post.title }}</h6></b-button>
+                                <div class="text-muted small mb-1">{{ post.department }} / {{ post.username }}</div>
                             </div>
+                        </header>
+                    </b-card-header>
+                    <b-card-body class="mt-1">
+                      <div class="form-group post-body">
+                        <b-card-text v-if="post.postText">{{ post.postText }}</b-card-text>
+                        <b-img class="image" v-else :src="post.imageUrl" alt="media"></b-img>
+                      </div>
+                    </b-card-body>
+                    <div>
+                      <b-form class="comment-footer" @submit.prevent='addComment(post._id)'>
+                          <b-form-group>
+                            <b-form-textarea v-model="commentText" rows="3" placeholder="Enter comments here"></b-form-textarea>
+                          </b-form-group>
+                          <div>
+                            <b-button type="submit" class="form-control btn-submit commentBtn" @submit="addComment">Submit Comment</b-button>
+                          </div>
+                       </b-form>
+                        <div v-for="comment in loadAllComments" :key="comment._id">
+                          <Comments v-if="postId === post._id" :comment="comment"/>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <p v-if="post.postText">{{ post.postText }}</p>
-                        <img v-if="post.mediaUrl" :src="post.mediaUrl" alt="media" class="image">
-                    </div>
-                    <div class="card-footer d-flex flex-wrap justify-content-between align-items-center px-0 pt-0 pb-3">
-                        <input type="text" class="form-control" placeholder="Enter your comment...">
-                        <div class="px-4 pt-3"> <button type="button" class="btn btn-primary"><i class="ion ion-md-create"></i>&nbsp; Comment</button> </div>
-                    </div>
-                </div>
+              </b-card>
             </div>
         </div>
+        <b-modal id="post-detail">
+        <form>
+            <div class="form-group">
+                <header>
+                    <h6>{{ post.department }} / {{ post.username }}</h6>
+                    <h5> {{ post.title }} </h5>
+                </header>
+            </div>
+            <div class="form-group">
+                <p>{{ post.content }}</p>
+            </div>
+            <div class="form-group">
+                <textarea cols="50" rows="4" v-model="commentText" placeholder="Enter comments here"></textarea>
+            </div>
+            <b-button type="submit" @click="addComment()">Submit Comment</b-button>
+            <div class="form-group">
+                <div v-for="comment in comments" :key="comment.id">
+                    <Comments
+                    :comment="comment" />
+                </div>
+            </div>
+        </form>
+    </b-modal>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import Comments from './Comments.vue'
+
 export default {
-  props: ['post', 'comments']
+  components: { Comments },
+  componets: {
+    Comments
+  },
+  props: ['post', 'comments'],
+  data () {
+    return {
+      commentText: ''
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'getPostsByDept',
+      'getAllComments'
+    ]),
+    loadAllComments () {
+      return this.getAllComments
+    }
+  },
+  methods: {
+    async addComment (postId) {
+      try {
+        if (this.commentText) {
+          await this.$store.dispatch('addNewComment', {
+            postId: postId,
+            username: this.$store.state.user.username,
+            department: this.$store.state.user.department,
+            commentText: this.commentText
+          }).then(
+            () => {
+              console.log('New Comment added')
+              console.log(this.postId)
+            }
+          )
+          this.$store.dispatch('loadAllComments')
+          this.commentText = ''
+        } else {
+          this.commentText = ''
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async readPost () {
+      const readTitle = document.querySelector('#postTitle')
+      readTitle.style.color = '#d1515a'
+    }
+  }
 }
 </script>
 
 <style lang="scss">
-    .mt-100 {
-        margin-top: 100px
-    }
-
     .card {
-        box-shadow: 0 0.46875rem 2.1875rem rgba(4, 9, 20, 0.03), 0 0.9375rem 1.40625rem rgba(4, 9, 20, 0.03), 0 0.25rem 0.53125rem rgba(4, 9, 20, 0.05), 0 0.125rem 0.1875rem rgba(4, 9, 20, 0.03);
-        border-width: 0;
-        transition: all .2s
+        box-shadow: 0 0.46875rem 2.1875rem rgba(209, 81, 90, 0.2), 0 0.9375rem 1.40625rem rgba(9, 31, 67, 0.15), 0 0.25rem 0.53125rem rgba(209, 81, 90, 0.2), 0 0.125rem 0.1875rem rgba(209, 81, 90, 0.2);
+        color: black;
     }
 
     .card-header:first-child {
         border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0
     }
+    .post-body {
+      border-bottom: solid 0.05px grey;
+    }
 
     .card-header {
         display: flex;
+        justify-content: center;
         align-items: center;
-        border-bottom-width: 1px;
-        padding-top: 0;
-        padding-bottom: 0;
-        padding-right: .625rem;
         height: 3.5rem;
         text-transform: uppercase;
-        background-color: #fff;
-        border-bottom: 1px solid rgba(26, 54, 126, 0.125)
+        background-color: #d1515a;
+        border-bottom: 3px solid rgba(26, 54, 126, 0.125)
     }
 
     .btn-primary {
@@ -72,23 +152,32 @@ export default {
         transition: color 0.15s, background-color 0.15s, border-color 0.15s, box-shadow 0.15s
     }
 
-    .card-body {
-        flex: 1 1 auto;
-        padding: .25rem;
-        color: black
-    }
-
-    .card-body p {
-        font-size: 1em
-    }
-
     a {
         color: #E91E63;
         text-decoration: none !important;
         background-color: transparent
     }
     #post {
-        width: 100%;
+        width: 95%;
         box-shadow: 2px 2px 5px gray;
+    }
+    #postBtn {
+        background: none;
+        border: none;
+        color: #091f43;
+        height: 10px;
+    }
+    .comment-footer {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      align-items: flex-start
+    }
+    .commentBtn {
+      pointer-events: auto;
+    }
+    .image {
+      width: 300px;
+      height: 200px
     }
 </style>

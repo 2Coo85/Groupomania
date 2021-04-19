@@ -36,9 +36,10 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <!-- POST -->
-                            <div class="post" v-for="post in posts" :key="post.id">
+                            <div class="post" v-for="post in loadAllPosts" :key="post._id">
                                 <Post :post="post" />
-                            </div><!-- POST -->
+                            </div>
+                            <!-- POST -->
                         </div>
                     </div>
                 </div>
@@ -79,10 +80,13 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   components: { CreatePost, Post },
+  // check taaking out props and using computed values
+  // props: ['post', 'comment'],
   computed: {
     ...mapGetters([
       'getAllPosts',
-      'getPostsByDept'
+      'getPostsByDept',
+      'getAllComments'
     ]),
     loadAllPosts () {
       return this.getAllPosts
@@ -96,6 +100,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('loadAllPosts')
+    this.$store.dispatch('loadAllComments')
   },
   data () {
     return {

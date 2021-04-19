@@ -7,8 +7,8 @@ Vue.use(Vuex)
 Vue.use(axios)
 
 export default new Vuex.Store({
+  strict: true,
   state: {
-    strict: true,
     departments: [
       'Sales and Marketing',
       'HR',
@@ -20,7 +20,10 @@ export default new Vuex.Store({
     oneUser: [],
     authToken: localStorage.getItem('authToken') || null,
     department: [],
-    user: JSON.parse(localStorage.getItem('user')) || null
+    user: JSON.parse(localStorage.getItem('user')) || null,
+    comments: [],
+    files: [],
+    userCommented: []
   },
   getters: {
     getUserName: (state) => {
@@ -56,6 +59,7 @@ export default new Vuex.Store({
     getPostsByDept: state => department => {
       const postByDept = state.posts
         .filter(post => post.department === department)
+        .sort((a, b) => new Date(b.created) - new Date(a.created))
       return postByDept
     },
     getSavedPosts: (state) => {
@@ -63,6 +67,9 @@ export default new Vuex.Store({
     },
     getAuthToken: (state) => {
       return state.authToken
+    },
+    getAllComments: (state) => {
+      return state.comments
     }
   },
   mutations: {
@@ -105,6 +112,12 @@ export default new Vuex.Store({
       if (index !== -1) {
         state.posts.splice(index, 1, currentPost)
       }
+    },
+    Add_Comment: (state, comments) => {
+      return state.comments.unshift(comments)
+    },
+    All_Comments: (state, comments) => {
+      state.comments = comments
     },
     logout (state) {
       state.isUserLoggedIn = false
@@ -164,15 +177,23 @@ export default new Vuex.Store({
       }
     },
     async createPost ({ commit }, data) {
+      const postForm = new FormData()
+      postForm.append('userId', data.userId)
+      postForm.append('username', data.username)
+      postForm.append('title', data.title)
+      postForm.append('department', data.department)
+      postForm.append('postText', data.postText)
+      postForm.append('file', data.file)
+
       try {
-        const response = await axios.post('http://localhost:3000/api/post/', data,
+        const response = await axios.post('http://localhost:3000/api/post/', postForm,
           {
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'multipart/form-data',
               Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
             }
           })
-        commit('Create_Post', JSON.stringify(JSON.parse(response.data)))
+        commit('Create_Post', response.data)
       } catch (error) {
         console.log(error)
       }
@@ -206,7 +227,7 @@ export default new Vuex.Store({
     },
     async getOnePost ({ commit }, data) {
       try {
-        const response = await axios.get(`http://localhost:3000/api/post/postModal/${data.id}/`, data, {
+        const response = await axios.get(`http://localhost:3000/api/post/${data.id}/`, data, {
           headers: {
             Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
@@ -216,26 +237,27 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-    async addNewComment ({ commit }, comment) {
+    async addNewComment ({ commit }, data) {
       try {
-        const response = await axios.post('http://localhost:3000/api/comments/', comment, {
+        const response = await axios.post('http://localhost:3000/api/comments/', data, {
           headers: {
-            authorization: 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+            authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
         })
-        commit('Add_Comment', response.data)
+        commit('Add_Comment', JSON.stringify(response.data))
       } catch (error) {
         console.log(error)
       }
     },
     async loadAllComments ({ commit }) {
       try {
-        const response = await axios.get('http://localhost:3000/api/comments', {
+        const response = await axios.get('http://localhost:3000/api/comments/', {
           headers: {
-            authorization: 'Bearer ' + JSON.parse(localStorage.getItem('token'))
+            authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
         })
-        commit('All_Comments', response.data)
+        const comment = await response.data
+        commit('All_Comments', comment)
         localStorage.setItem('comments', JSON.stringify(response.data))
       } catch (error) {
         console.log(error)
@@ -258,6 +280,17 @@ export default new Vuex.Store({
         localStorage.setItem('user', JSON.stringify(user))
         commit('auth_successful', { user, authToken })
         router.push('/home')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async savedPost ({ commit }, data) {
+      try {
+        const response = await axios.post('http://localhost:3000/api/auth/user/' + this.state.user._id + '/savedPosts', {
+          saved: data
+        })
+        const savedPost = await response.data.user.saved
+        commit('setSavedPosts', savedPost)
       } catch (error) {
         console.log(error)
       }

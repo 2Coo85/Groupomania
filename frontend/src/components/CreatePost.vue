@@ -1,8 +1,7 @@
 <template>
     <div>
       <div class="mt-2 mb-5" id="create-post">
-        <ValidationObserver v-slot="{ handleSubmit }">
-          <b-form id="postForm" class="post-form py-2 pl-3" @submit.prevent="handleSubmit(createPost())">
+          <b-form id="postForm" class="post-form py-2 pl-3" enctype="multipart/form-data" @submit.prevent="createPost()">
               <b-form-group class="row post-header">
                   <div>
                       <label for="title">Title: </label>
@@ -26,33 +25,33 @@
                   <p class="fa fa-image options mb-0 mr-4"></p> <img class="options" src="https://img.icons8.com/material/24/000000/more--v2.png" width="30px" height="28px">
                 </div>
                 <div>
-                  <b-form-file id="fileId"  name="file-field" type="file" ref="file" class="form-control-file" accept="image/png, image/jpeg, video/mpeg, image/jpg" @click="$ref.file.click()"/>
+                  <upload-btn class="form-control-file" type="file" id="file" name="image" placeholder="Select a file..." form="postForm" plain @click="chooseFile" @file-update="getFile"></upload-btn>
                 </div>
                   <div>
-                    <b-button type="submit" name="post-btn" class="form-control btn-submit" @submit="createPost">Post</b-button>
+                    <b-button type="submit" name="post-btn" class="form-control btn-submit postBtn">Post</b-button>
                   </div>
               </b-form-group>
           </b-form>
-        </ValidationObserver>
       </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { ValidationObserver } from 'vee-validate'
+import UploadButton from 'vuetify-upload-button'
 
 export default {
   components: {
-    ValidationObserver
+    'upload-btn': UploadButton
   },
   data () {
     return {
-      fileName: '',
       postText: '',
-      file: null,
+      uploadedImage: false,
+      imageFile: false,
       title: '',
-      department: ''
+      department: '',
+      fileName: ''
     }
   },
   computed: {
@@ -61,30 +60,49 @@ export default {
     ])
   },
   methods: {
+    getFile (file) {
+      const fr = new FileReader()
+      fr.readAsDataURL(file)
+      fr.addEventListener('load', () => {
+        this.uploadedImage = fr.result
+        this.imageFile = file
+      })
+    },
     async createPost () {
       try {
-        this.file = this.$refs.file.files[0]
-        if (this.file) {
-          await this.$store.dispatch('createPost',
-            {
-              userId: this.$store.state.user._id,
-              username: this.$store.state.user.username,
-              title: this.title,
-              department: this.department,
-              file: this.file
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+        if (this.imageFile) {
+          if (this.imageFile !== false) {
+            await this.$store.dispatch('createPost',
+              {
+                userId: this.$store.state.user._id,
+                username: this.$store.state.user.username,
+                title: this.title,
+                department: this.department,
+                postText: this.postText,
+                file: this.imageFile
+              },
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+                }
+              }).then(
+              () => {
+                console.log('Post and file added successfully')
               }
-            }).then(
-            (response) => {
-              console.log(response)
-            }
-          )
-          this.$store.dispatch('loadAllPosts')
-          this.fileName = ''
+            )
+            this.$store.dispatch('loadAllPosts')
+            this.imageFile = false
+            this.content = ''
+            this.title = ''
+            this.department = null
+          } else {
+            this.imageFile = false
+            this.content = ''
+            this.title = ''
+            this.department = null
+            console.log('invalid')
+          }
         } else if (this.postText) {
           await this.$store.dispatch('createPost',
             {
@@ -93,34 +111,33 @@ export default {
               title: this.title,
               department: this.department,
               postText: this.postText
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
-              }
             }).then(
-            (response) => {
-              console.log(response)
+            () => {
+              console.log('Post added successfully')
             }
           )
           this.$store.dispatch('loadAllPosts')
           this.postText = ''
         } else {
           console.log('not posted')
-          this.fileName = ''
           this.postText = ''
         }
       } catch (error) {
-        this.fileName = ''
         this.file = null
         this.postText = ''
         console.log(error)
       }
     },
-    onSubmit () {
-      console.log('post submitted')
-    }
+    chooseFile () {
+      this.$refs.file.click()
+    }/* ,
+    onFileChange () {
+      const fileInput = document.querySelector('#file')
+      const files = fileInput.files
+      this.file = files[0]
+      console.log(this.file)
+      console.log(this.file.name)
+    } */
   }
 }
 </script>
@@ -144,5 +161,8 @@ export default {
         justify-content: center;
         align-items: center;
         width: 100%;
+    }
+    .postBtn {
+      pointer-events: auto;
     }
 </style>

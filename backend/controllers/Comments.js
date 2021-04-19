@@ -2,19 +2,22 @@ const Comment = require('../models/comments');
 
 exports.createComments = (req, res, next) => {
     const comments = new Comment({
-        username: req.body.comments.username,
-        department: req.body.comments.department,
-        commentText: req.body.comments.commentText
+        userId: req.body.userId,
+        username: req.body.username,
+        department: req.body.department,
+        commentText: req.body.commentText,
+        postId: req.body.postId
     });
     comments.save().then(
         () => {
             res.status(201).json({
-                message: 'Comment added to successfully!'
+                message: 'Comment added successfully'
             });
         }
     ).catch(
         (error) => {
             res.status(400).json({
+                message: 'Comment not created',
                 error: error
             });
         }

@@ -39,17 +39,18 @@ export default {
     logOut () {
       this.$swal({
         title: 'Log Off?',
-        showCancelButton: true,
-        confirmButtonText: 'Log Off',
-        cancelButtonText: 'Cancel'
+        icon: 'question',
+        toast: false,
+        position: 'top',
+        showCancelButton: true
       }).then(
         (result) => {
           if (result.value) {
-            this.$swal('Logged Out!', 'See you again soon', 'success')
+            this.$swal('Logged Out!', '', 'success')
             this.$store.commit('logout')
             this.$router.push('/')
           } else {
-            this.$swal('Cancelled', 'info')
+            this.$swal('Cancelled', '', 'info')
           }
         }
       )

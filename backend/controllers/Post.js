@@ -9,14 +9,16 @@ exports.createPost = (req, res, next) => {
             username: req.body.username,
             department: req.body.department,
             title: req.body.title,
-            mediaUrl: url + '/media/' + req.file.filename
-            //usersCommented: req.body.post.usersCommented
+            imageUrl: url + '/images/' + req.file.filename,
+            usersCommented: req.body.usersCommented,
+            created : new Date()
         });
         post.save().then(
             () => {
                 res.status(201).json({
                     message: 'Post and media added to database successfully!'
-                });
+                }
+                );
             }
         ).catch(
             (error) => {
@@ -31,8 +33,9 @@ exports.createPost = (req, res, next) => {
             username: req.body.username,
             department: req.body.department,
             title: req.body.title,
-            postText: req.body.postText
-            //usersCommented: req.body.post.usersCommented
+            postText: req.body.postText,
+            usersCommented: req.body.usersCommented,
+            created : new Date()
         });
         post.save().then(
             () => {
@@ -66,6 +69,27 @@ exports.getOnePost = (req, res, next) => {
         }
     );
 };
+
+exports.commentedPost = (req, res, next) => {
+    Post.findOne({_id: req.params.id}).then((post) => {
+        if (post.usersCommented === []) {
+            post.usersCommented.push(req.body.userId)
+        }
+        post.save().then(
+            () => {
+                res.status(200).json({
+                    message: "Comment added successfully"
+                })
+            }
+        ).catch(
+            (error) => {
+                res.status(400).json({
+                    error: errror
+                })
+            }
+        )
+    })
+}
 
 exports.showAllPosts = (req, res, next) => {
     Post.find().then(

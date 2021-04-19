@@ -8,7 +8,6 @@ import RetailOps from '../views/RetailOps.vue'
 import PostsSaved from '../views/PostsRead.vue'
 import Settings from '../views/UserSettings.vue'
 import Main from '../views/MainPage.vue'
-import PostDetail from '../components/PostDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -52,11 +51,6 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings
-  },
-  {
-    path: '/post/:title',
-    name: 'Post Detail',
-    component: PostDetail
   }
 ]
 
