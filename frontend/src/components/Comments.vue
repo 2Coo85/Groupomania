@@ -8,7 +8,7 @@
                             <div class="d-flex flex-row align-items-center"> <span class="mr-2">{{ comment.username }}</span></div>
                             </div>
                             <p class="text-justify comment-text mb-0">{{ comment.commentText }}</p>
-                            <div class="d-flex flex-row user-feed"> <span class="wish"><i class="fa fa-heartbeat mr-2"></i>24</span> <span class="ml-3"><i class="fa fa-comments-o mr-2"></i><button type="submit" @click="addComment(), submitComment()">Reply</button></span> </div>
+                            <div class="d-flex flex-row user-feed"> <span class="ml-3"><i class="fa fa-comments-o mr-2"></i><button type="submit" @click="addComment(), submitComment()">Reply</button></span> </div>
                         </div>
                    </div>
             </div>
@@ -52,7 +52,11 @@ export default {
       }
     },
     submitComment () {
+      const newComment = this.addComment()
       try {
+        if (this.postId === this.posts._id) {
+          return newComment
+        }
         const userCommenting = this.$store.state.user.userId
         const userCommented = this.$store.state.posts.userCommented.push(userCommenting)
         console.log(userCommented)

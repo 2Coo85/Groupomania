@@ -23,12 +23,9 @@
                             <b-form-textarea v-model="commentText" rows="3" placeholder="Enter comments here"></b-form-textarea>
                           </b-form-group>
                           <div>
-                            <b-button type="submit" class="form-control btn-submit commentBtn" @submit="addComment">Submit Comment</b-button>
+                            <b-button type="submit" class="form-control btn-submit commentBtn" @submit="addComment" >Submit Comment</b-button>
                           </div>
                        </b-form>
-                        <div v-for="comment in loadAllComments" :key="comment._id">
-                          <Comments v-if="postId === post._id" :comment="comment"/>
-                        </div>
                     </div>
               </b-card>
             </div>
@@ -49,8 +46,8 @@
             </div>
             <b-button type="submit" @click="addComment()">Submit Comment</b-button>
             <div class="form-group">
-                <div v-for="comment in comments" :key="comment.id">
-                    <Comments
+                <div>
+                    <Comments v-for="comment in comments" :key="comment.id"
                     :comment="comment" />
                 </div>
             </div>
@@ -60,7 +57,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Comments from './Comments.vue'
 
 export default {
@@ -71,22 +68,30 @@ export default {
   props: ['post', 'comments'],
   data () {
     return {
-      commentText: ''
+      commentText: '',
+      comment: []
     }
   },
   computed: {
     ...mapGetters([
       'getPostsByDept',
-      'getAllComments'
+      'getUserCommenting',
+      'getAllPosts'
     ]),
-    loadAllComments () {
-      return this.getAllComments
+    ...mapState([
+      'posts'
+    ]),
+    userCommenting () {
+      return this.getUserCommenting
     }
+  },
+  mounted () {
+    this.loadComment(this.$route.params.id)
   },
   methods: {
     async addComment (postId) {
       try {
-        if (this.commentText) {
+        if (this.commentText !== '') {
           await this.$store.dispatch('addNewComment', {
             postId: postId,
             username: this.$store.state.user.username,
@@ -95,7 +100,7 @@ export default {
           }).then(
             () => {
               console.log('New Comment added')
-              console.log(this.postId)
+              console.log(postId)
             }
           )
           this.$store.dispatch('loadAllComments')
@@ -110,6 +115,18 @@ export default {
     async readPost () {
       const readTitle = document.querySelector('#postTitle')
       readTitle.style.color = '#d1515a'
+    },
+    async loadComment (postId) {
+      try {
+        await this.$store.dispatch('loadAllComments', postId).then(
+          (response) => {
+            this.comment = response
+            console.log(this.comment)
+          }
+        )
+      } catch (error) {
+        
+      }
     }
   }
 }

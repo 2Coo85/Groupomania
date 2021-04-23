@@ -118,6 +118,8 @@ export default {
           )
           this.$store.dispatch('loadAllPosts')
           this.postText = ''
+          this.title = ''
+          this.department = null
         } else {
           console.log('not posted')
           this.postText = ''
@@ -125,19 +127,14 @@ export default {
       } catch (error) {
         this.file = null
         this.postText = ''
+        this.title = ''
+        this.department = null
         console.log(error)
       }
     },
     chooseFile () {
       this.$refs.file.click()
-    }/* ,
-    onFileChange () {
-      const fileInput = document.querySelector('#file')
-      const files = fileInput.files
-      this.file = files[0]
-      console.log(this.file)
-      console.log(this.file.name)
-    } */
+    }
   }
 }
 </script>

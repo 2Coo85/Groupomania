@@ -22,8 +22,7 @@ export default new Vuex.Store({
     department: [],
     user: JSON.parse(localStorage.getItem('user')) || null,
     comments: [],
-    files: [],
-    userCommented: []
+    files: []
   },
   getters: {
     getUserName: (state) => {
@@ -69,7 +68,10 @@ export default new Vuex.Store({
       return state.authToken
     },
     getAllComments: (state) => {
-      return state.comments
+      return state.posts.comments
+    },
+    getUserCommenting: (state) => {
+      return state.posts.usersCommented
     }
   },
   mutations: {
@@ -114,7 +116,7 @@ export default new Vuex.Store({
       }
     },
     Add_Comment: (state, comments) => {
-      return state.comments.unshift(comments)
+      return state.posts.push(comments)
     },
     All_Comments: (state, comments) => {
       state.comments = comments
@@ -249,9 +251,9 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-    async loadAllComments ({ commit }) {
+    async loadAllComments ({ commit }, postId) {
       try {
-        const response = await axios.get('http://localhost:3000/api/comments/', {
+        const response = await axios.get('http://localhost:3000/api/comments/' + postId, {
           headers: {
             authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }

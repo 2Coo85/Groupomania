@@ -1,8 +1,7 @@
 <template>
     <div>
         <b-modal id="logIn">
-            <ValidationObserver v-slot="{ handleSubmit }">
-            <b-form @submit.prevent='handleSubmit(login())'>
+            <b-form @submit.prevent='login()'>
                 <b-form-group label="Email" label-for="form-email" >
                     <validation-provider rules="required|email" v-slot="{ errors }" name="email">
                         <b-form-input
@@ -29,13 +28,12 @@
                 </b-form-group>
                 <b-button type="submit" class="form-control" size="sm">Sign In</b-button>
             </b-form>
-            </ValidationObserver>
         </b-modal>
     </div>
 </template>
 
 <script>
-import { ValidationProvider, extend, ValidationObserver } from 'vee-validate'
+import { ValidationProvider, extend } from 'vee-validate'
 import { required, email } from 'vee-validate/dist/rules'
 
 extend('required', {
@@ -47,8 +45,7 @@ extend('email', email)
 
 export default {
   components: {
-    ValidationProvider,
-    ValidationObserver
+    ValidationProvider
   },
   data () {
     return {

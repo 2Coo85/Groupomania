@@ -38,6 +38,9 @@
                             <!-- POST -->
                             <div class="post" v-for="post in loadAllPosts" :key="post._id">
                                 <Post :post="post" />
+                                <div v-for="comment in loadComments" :key="comment._id">
+                                    <Comments :comment="comment"/>
+                                </div>
                             </div>
                             <!-- POST -->
                         </div>
@@ -77,9 +80,10 @@
 import CreatePost from '../components/CreatePost.vue'
 import Post from '../components/Post.vue'
 import { mapGetters, mapState } from 'vuex'
+import Comments from '../components/Comments'
 
 export default {
-  components: { CreatePost, Post },
+  components: { CreatePost, Post, Comments },
   // check taaking out props and using computed values
   // props: ['post', 'comment'],
   computed: {
@@ -90,6 +94,9 @@ export default {
     ]),
     loadAllPosts () {
       return this.getAllPosts
+    },
+    loadComments () {
+      return this.getAllComments
     },
     ...mapState([
       'posts'

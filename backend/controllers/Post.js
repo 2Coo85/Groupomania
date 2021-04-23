@@ -72,7 +72,7 @@ exports.getOnePost = (req, res, next) => {
 
 exports.commentedPost = (req, res, next) => {
     Post.findOne({_id: req.params.id}).then((post) => {
-        if (post.usersCommented === []) {
+        if (req.body.usersCommented === []) {
             post.usersCommented.push(req.body.userId)
         }
         post.save().then(

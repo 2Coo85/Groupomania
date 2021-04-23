@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <!-- POST -->
-                            <div class="post" v-for="post in posts" :key="post.id">
+                            <div class="post" v-for="post in allPosts" :key="post.id">
                                 <Post :post="post" />
                             </div><!-- POST -->
                         </div>
@@ -97,63 +97,6 @@ export default {
     }
   },
   methods: {
-    async createPost () {
-      try {
-        this.file = this.$refs.file.files[0]
-        if (this.file) {
-          await this.$store.dispatch('createPost',
-            {
-              userId: this.$store.state.user._id,
-              username: this.$store.state.user.username,
-              title: this.title,
-              department: this.$store.state.departments[1],
-              file: this.file
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
-              }
-            }).then(
-            (response) => {
-              console.log(response)
-            }
-          )
-          this.$store.dispatch('loadAllPosts')
-          this.fileName = ''
-        } else if (this.postText) {
-          await this.$store.dispatch('createPost',
-            {
-              userId: this.$store.state.user._id,
-              username: this.$store.state.user.username,
-              title: this.title,
-              department: this.$store.state.departments[1],
-              postText: this.postText
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
-              }
-            }).then(
-            (response) => {
-              console.log(response)
-            }
-          )
-          this.$store.dispatch('loadAllPosts')
-          this.postText = ''
-        } else {
-          console.log('not posted')
-          this.fileName = ''
-          this.postText = ''
-        }
-      } catch (error) {
-        this.fileName = ''
-        this.file = null
-        this.postText = ''
-        console.log(error)
-      }
-    },
     onSubmit () {
       console.log('post submitted')
     }

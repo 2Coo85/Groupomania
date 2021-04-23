@@ -2,7 +2,6 @@ const Comment = require('../models/comments');
 
 exports.createComments = (req, res, next) => {
     const comments = new Comment({
-        userId: req.body.userId,
         username: req.body.username,
         department: req.body.department,
         commentText: req.body.commentText,
@@ -25,7 +24,9 @@ exports.createComments = (req, res, next) => {
 }
 
 exports.getAllComments = (req, res, next) => {
-    Comment.find().then(
+    Comment.find({
+        postId:req.params.id
+    }).then(
         (comments) => {
             res.status(200).json(comments);
         }

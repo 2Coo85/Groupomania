@@ -4,6 +4,6 @@ const router = express.Router();
 const commentCtrl = require('../controllers/Comments');
 
 router.post('/', commentCtrl.createComments);
-router.get('/', commentCtrl.getAllComments);
+router.get('/:id', commentCtrl.getAllComments);
 
 module.exports = router;
