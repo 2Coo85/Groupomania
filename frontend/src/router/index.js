@@ -5,9 +5,9 @@ import Management from '../views/Management.vue'
 import HR from '../views/HR.vue'
 import SalesMarketing from '../views/SalesMarketing.vue'
 import RetailOps from '../views/RetailOps.vue'
-import PostsSaved from '../views/PostsRead.vue'
 import Settings from '../views/UserSettings.vue'
 import Main from '../views/MainPage.vue'
+import PostDetail from '../views/ViewPost'
 
 Vue.use(VueRouter)
 
@@ -43,14 +43,15 @@ const routes = [
     component: HR
   },
   {
-    path: '/savedPosts',
-    name: 'Posts Saved',
-    component: PostsSaved
-  },
-  {
     path: '/settings',
     name: 'Settings',
     component: Settings
+  },
+  {
+    path: '/:id',
+    name: 'Post',
+    props: true,
+    component: PostDetail
   }
 ]
 

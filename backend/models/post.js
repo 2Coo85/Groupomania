@@ -7,8 +7,7 @@ const postSchema = mongoose.Schema({
     title: {type: String, required: true},
     imageUrl: {type: String},
     postText: {type: String},
-    created : {type : Date},
-    usersCommented: {type: [String]}
+    created : {type : Date}
 }, { collection: 'posts' }
 );
 

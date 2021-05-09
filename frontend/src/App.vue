@@ -12,7 +12,17 @@ export default {
   name: 'app',
   components: {
     NavBar
-  }
+  },
+  mounted () {
+    this.$store.dispatch('loadAllPosts')
+  },
+  filters: {
+    getPostsByDept: state => department => {
+      const postByDept = state.posts
+        .filter(post => post.department === department)
+      return postByDept
+    }  
+  },
 }
 </script>
 

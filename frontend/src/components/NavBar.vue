@@ -18,7 +18,6 @@
                 </b-dropdown>
                 <b-dropdown text="User" right class="mr-3">
                     <b-dropdown-item href="/settings">Account</b-dropdown-item>
-                    <b-dropdown-item href="/savedPosts">Saved Posts</b-dropdown-item>
                     <b-dropdown-item @click="logOut">Log Out</b-dropdown-item>
                 </b-dropdown>
             </b-collapse>

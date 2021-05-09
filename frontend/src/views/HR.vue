@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <!-- POST -->
-                            <div class="post" v-for="post in allPosts" :key="post.id">
+                            <div class="post" v-for="post in allPosts" :key="post._id" :id="post._id | getPostsByDept">
                                 <Post :post="post" />
                             </div><!-- POST -->
                         </div>
@@ -73,12 +73,22 @@ export default {
     Post,
     CreatePost
   },
+  filters: {
+    getPostsByDept: state => department => {
+      const postByDept = state.posts
+        .filter(post => post.department === department)
+      return postByDept
+    }  
+  },
+  mounted () {
+    this.$store.dispatch('loadAllPosts')
+  },
   computed: {
     ...mapGetters([
       'getPostsByDept'
     ]),
     allPosts () {
-      return this.getPostsByDept('HR')
+      return this.$store.getters.getPostsByDept('HR')
     },
     ...mapState([
       'posts'
@@ -106,6 +116,6 @@ export default {
 
 <style lang="scss">
     #comment-card {
-        width: 500px;
+       width: 500px;
     }
 </style>

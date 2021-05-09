@@ -3,14 +3,16 @@
         <div class="row">
             <div class="col-md-12">
               <b-card class="mb-1">
+                <template v-slot:header>
                     <b-card-header>
                         <header class="0w-100">
                             <div class="ml-3">
-                                <b-button id="postBtn" class="mb-4" @click="$bvModal.show('post-detail')"><h6 id="postTitle" @click="readPost()">{{ post.title }}</h6></b-button>
+                                <router-link id="postTitle" :to="{ name: 'Post', params: { id: post._id, post: post }}"><h6>{{ post.title }}</h6></router-link>
                                 <div class="text-muted small mb-1">{{ post.department }} / {{ post.username }}</div>
                             </div>
                         </header>
                     </b-card-header>
+                </template>
                     <b-card-body class="mt-1">
                       <div class="form-group post-body">
                         <b-card-text v-if="post.postText">{{ post.postText }}</b-card-text>
@@ -23,36 +25,21 @@
                             <b-form-textarea v-model="commentText" rows="3" placeholder="Enter comments here"></b-form-textarea>
                           </b-form-group>
                           <div>
-                            <b-button type="submit" class="form-control btn-submit commentBtn" @submit="addComment" >Submit Comment</b-button>
+                            <b-button type="submit" class="form-control btn-submit commentBtn" @submit="addComment">Submit Comment</b-button>
                           </div>
                        </b-form>
                     </div>
+                <template v-slot:footer>
+                    <div class="form-group">
+                      <div>
+                        <Comments v-for="comment in post.comments" :key="comment.id"
+                        :comment="comment" />
+                      </div>
+                  </div>
+                </template>
               </b-card>
             </div>
         </div>
-        <b-modal id="post-detail">
-        <form>
-            <div class="form-group">
-                <header>
-                    <h6>{{ post.department }} / {{ post.username }}</h6>
-                    <h5> {{ post.title }} </h5>
-                </header>
-            </div>
-            <div class="form-group">
-                <p>{{ post.content }}</p>
-            </div>
-            <div class="form-group">
-                <textarea cols="50" rows="4" v-model="commentText" placeholder="Enter comments here"></textarea>
-            </div>
-            <b-button type="submit" @click="addComment()">Submit Comment</b-button>
-            <div class="form-group">
-                <div>
-                    <Comments v-for="comment in comments" :key="comment.id"
-                    :comment="comment" />
-                </div>
-            </div>
-        </form>
-    </b-modal>
     </div>
 </template>
 
@@ -69,24 +56,21 @@ export default {
   data () {
     return {
       commentText: '',
-      comment: []
+      comment: [],
+      title: '',
+      postText: '',
+      imageUrl: '',
+      selectedPost: null
     }
   },
   computed: {
     ...mapGetters([
       'getPostsByDept',
-      'getUserCommenting',
       'getAllPosts'
     ]),
     ...mapState([
       'posts'
-    ]),
-    userCommenting () {
-      return this.getUserCommenting
-    }
-  },
-  mounted () {
-    this.loadComment(this.$route.params.id)
+    ])
   },
   methods: {
     async addComment (postId) {
@@ -103,29 +87,13 @@ export default {
               console.log(postId)
             }
           )
-          this.$store.dispatch('loadAllComments')
+          this.$store.dispatch('loadAllPosts')
           this.commentText = ''
         } else {
           this.commentText = ''
         }
       } catch (error) {
         console.log(error)
-      }
-    },
-    async readPost () {
-      const readTitle = document.querySelector('#postTitle')
-      readTitle.style.color = '#d1515a'
-    },
-    async loadComment (postId) {
-      try {
-        await this.$store.dispatch('loadAllComments', postId).then(
-          (response) => {
-            this.comment = response
-            console.log(this.comment)
-          }
-        )
-      } catch (error) {
-        
       }
     }
   }
@@ -169,7 +137,7 @@ export default {
         transition: color 0.15s, background-color 0.15s, border-color 0.15s, box-shadow 0.15s
     }
 
-    a {
+    #postTitle:visited {
         color: #E91E63;
         text-decoration: none !important;
         background-color: transparent
