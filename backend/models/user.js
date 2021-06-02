@@ -1,15 +1,13 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator')
+const db = require('../middleware/dbConfig')
+const { Sequelize, DataTypes } = require('sequelize')
 
-const userSchema = mongoose.Schema({
-    userId: {type: String},
-    username: {type: String, required: true, unique: true},
-    department: {type: String},
-    email: {type: String, required: true, unique: true},
-    phone: {type: Number},
-    password: {type: String, required: true}
+const User = db.define('user', {
+    userId: {type: DataTypes.INTEGER},
+    username: {type: DataTypes.STRING, required: true, unique: true},
+    department: {type: DataTypes.STRING},
+    email: {type: DataTypes.STRING, required: true, unique: true},
+    phone: {type: DataTypes.INTEGER},
+    password: {type: DataTypes.STRING, required: true}
 });
 
-userSchema.plugin(uniqueValidator);
-
-module.exports = mongoose.model('User', userSchema);
+module.exports = User

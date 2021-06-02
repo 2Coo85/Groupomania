@@ -1,19 +1,20 @@
-const Post = require('../models/post');
+const config = require('../middleware/dbConfig');
+const sql = require('mssql')
+const database = require('../models/post')
 
 exports.createPost = (req, res, next) => {
     //req.body.post = JSON.parse(req.body.post);
+    
     const url = req.protocol + '://' + req.get('host');
     if (req.file) {
-        const post = new Post({
+        database.posts.create({
             userId: req.body.userId,
             username: req.body.username,
             department: req.body.department,
             title: req.body.title,
             imageUrl: url + '/images/' + req.file.filename,
-            usersCommented: req.body.usersCommented,
-            created : new Date()
-        });
-        post.save().then(
+            usersCommented: req.body.usersCommented
+        }).then(
             () => {
                 res.status(201).json({
                     message: 'Post and media added to database successfully!'
@@ -28,16 +29,14 @@ exports.createPost = (req, res, next) => {
             }
         ); 
     } else {
-        const post = new Post({
+        database.posts({
             userId: req.body.userId,
             username: req.body.username,
             department: req.body.department,
             title: req.body.title,
             postText: req.body.postText,
-            usersCommented: req.body.usersCommented,
-            created : new Date()
-        });
-        post.save().then(
+            usersCommented: req.body.usersCommented
+        }).then(
             () => {
                 res.status(201).json({
                     message: 'Post added to database successfully!'
@@ -54,7 +53,7 @@ exports.createPost = (req, res, next) => {
 };
 
 exports.getOnePost = (req, res, next) => {
-    Post.findOne({
+    database.posts.findOne({
         _id:req.params.id
     })
     .then(
@@ -71,7 +70,7 @@ exports.getOnePost = (req, res, next) => {
 };
 
 exports.showAllPosts = (req, res, next) => {
-    Post.find().then(
+    database.posts.find().then(
         (posts) => {
             res.status(200).json(posts);
         }

@@ -1,14 +1,16 @@
-const mongoose = require('mongoose');
+module.exports = (sequelize, Sequelize) => {
+  const Post = sequelize.define('Post', {
+        userId: {type: Sequelize.INTEGER, required: true, references: {
+            model: 'users',
+            key: 'id'
+        }},
+        username: {type: Sequelize.STRING},
+        department: {type: Sequelize.STRING},
+        title: {type: Sequelize.TEXT},
+        imageUrl: {type: Sequelize.STRING, allowNull: true},
+        postText: {type: Sequelize.TEXT, allowNull: true},
+    })
+    return Post
+}
 
-const postSchema = mongoose.Schema({
-    userId: {type: String},
-    username: {type: String},
-    department: {type: String, required: true},
-    title: {type: String, required: true},
-    imageUrl: {type: String},
-    postText: {type: String},
-    created : {type : Date}
-}, { collection: 'posts' }
-);
 
-module.exports = mongoose.model('Post', postSchema);

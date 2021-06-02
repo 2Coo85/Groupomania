@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const path = require('path');
 
 const postRoutes = require('./routes/post');
@@ -9,17 +8,6 @@ const commentRoutes = require('./routes/comment')
 
 const app = express();
 
-mongoose.connect(
-    'mongodb+srv://tc3085:S6vK5mmykEizcnP7@cluster0.zuqab.mongodb.net/vue-cli-service?retryWrites=true&w=majority',
-  { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Successfully connected to MongoDB Atlas!');
-  })
-  .catch((error) => {
-    console.log('Unable to connect to MongoDB Atlas!');
-    console.error(error);
-  });
-
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -27,9 +15,40 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
-
 app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+  var sql = require('mssql/msnodesqlv8')
+
+  var config = {
+    user: 'sa',
+    password: 'Mania01',
+    server: '2COOLHP\\SQLEXPRESS',
+    database: 'GroupoMania',
+    dialet: 'mssql',
+    driver: 'msnodesqlv8'
+  }
+  console.log('starting sql...')
+
+  const pool = new sql.ConnectionPool(config)
+  pool.connect().then(
+    () => {
+      pool.request().query('select * from Posts', (err, result) => {
+        if (err) {
+          res.send(err)
+        } else {
+          return res.json({
+            data: result.recordset
+          })
+        }
+      })
+      sql.close()
+    }
+  )
+  console.log('ending sql')
+})
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/post', postRoutes);
 app.use('/api/auth', userRoutes);
