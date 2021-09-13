@@ -1,38 +1,58 @@
-const User = require('../models/user')
+// const db = require('../models/index')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const dbConfig = require('../config/dbConfig');
+//const models = require('../models')
+const User = require('../models/user').User
 //let randtoken = require('random-token');
+
+const authToken = user => {
+    token = jwt.sign({userId: user.id}, "newKey", {expiresIn: '24h'})
+    return { user, token }
+}
 
 exports.signUp = (req, res, next) => {
     bcrypt.hash(req.body.password, 10).then(
         (hash) => {
-            const user = new User({
-                username: req.body.username,
-                password: hash,
-                department: req.body.department,
-                email: req.body.email,
-                phone: req.body.phone
-            });
-            user.save().then(
-                () => {
-                    res.status(201).json({
-                        message: 'User registered successfully'
-                    });
-                }
-            ).catch(
-                (error) => {
-                    res.status(500).json({
-                        error: error
-                    });
-                }
-            );
+            let id = `CREATE UNIQUE INDEX userId ON Users (id)`
+            let sql = `INSERT INTO Users (username, department, email, phone, password) VALUES ('+req.body.username+', '+req.body.department+', '+req.body.email+', '+req.body.phone+', '+hash+')`
+            dbConfig.query( (sql, id), (err) => {
+            // User.create({
+            //     username: req.body.username,
+            //     password: hash,
+            //     department: req.body.department,
+            //     email: req.body.email,
+            //     phone: req.body.phone
+            // })
+                if (err) {
+                    console.log(err)
+                    return res.status(500).json({
+                        message: 'Error has occured ' + err
+                    })
+                } 
+                res.status(201).json({
+                    message: 'User added successfully'
+                });
+            })
+            // .catch(
+            //     (error) => {
+            //         res.status(500).json({
+            //             error: error
+            //         });
+            //     }
+            // );
         }
-        
-    );
+    ).catch(
+        (error) => {
+            res.status(501).json({
+                message: "Error has occured" || error
+            })
+        }
+    )
 };
 
 exports.logIn = (req, res, next) => {
-    User.findOne({where: {email: req.body.email}}).then(
+    User.users.findAll({attributes: ['email']}).then(
         (user) => {
             if (!user) {
                 return res.status(401).json({
@@ -46,7 +66,7 @@ exports.logIn = (req, res, next) => {
                             error: new Error("Incorrect password entered")
                         });
                     }
-                    const authToken = jwt.sign({userId: user._id}, 
+                    const authToken = jwt.sign({userId: user.id}, 
                     "newKey",
                     {expiresIn: '24h'});
                     res.status(200).json({
@@ -65,7 +85,7 @@ exports.logIn = (req, res, next) => {
         }
     ).catch(
         (error) => {
-            res.status(500).json({
+            res.status(501).json({
                 error: new Error('second error')
             });
         }

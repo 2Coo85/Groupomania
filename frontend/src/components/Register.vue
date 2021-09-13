@@ -5,7 +5,7 @@
                 <div class="form-group">
                     <label for="username">Username: </label>
                     <validation-provider rules="required" v-slot="{ errors }">
-                        <input id="username" type="text" minlength="6" maxlength="8" v-model="username">
+                        <input id="username" type="text" min="6" max="8" v-model="username">
                         <p><small>Must be between 6-8 characters; not case sensitive</small></p>
                         <span>{{ errors[0] }}</span>
                     </validation-provider>

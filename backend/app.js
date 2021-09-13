@@ -17,36 +17,23 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  var sql = require('mssql/msnodesqlv8')
+// const Sequelize = require('sequelize')
+// var sql = require('mssql/msnodesqlv8')
+// var config = require('./middleware/dbConfig');
 
-  var config = {
-    user: 'sa',
-    password: 'Mania01',
-    server: '2COOLHP\\SQLEXPRESS',
-    database: 'GroupoMania',
-    dialet: 'mssql',
-    driver: 'msnodesqlv8'
-  }
-  console.log('starting sql...')
+// console.log('starting sql...')
+  
+// const pool = new sql.ConnectionPool(config)
 
-  const pool = new sql.ConnectionPool(config)
-  pool.connect().then(
-    () => {
-      pool.request().query('select * from Posts', (err, result) => {
-        if (err) {
-          res.send(err)
-        } else {
-          return res.json({
-            data: result.recordset
-          })
-        }
-      })
-      sql.close()
-    }
-  )
-  console.log('ending sql')
-})
+// pool.connect().then(
+//   () => {
+//     console.log('Database Connected')
+//   }
+// ). catch(
+//   (err) => {
+//     console.log('Error ' + err)
+//   }
+// )
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

@@ -1,13 +1,28 @@
-const db = require('../middleware/dbConfig')
-const { Sequelize, DataTypes } = require('sequelize')
+const Post = require('./post')
+const Comment = require('./comments')
+const { DataTypes } = require('sequelize')
 
-const User = db.define('user', {
-    userId: {type: DataTypes.INTEGER},
-    username: {type: DataTypes.STRING, required: true, unique: true},
-    department: {type: DataTypes.STRING},
-    email: {type: DataTypes.STRING, required: true, unique: true},
-    phone: {type: DataTypes.INTEGER},
-    password: {type: DataTypes.STRING, required: true}
+module.exports = (sequelize) => {
+
+    var User = sequelize.define('users', {
+    id: {type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true},
+    username: {type: DataTypes.STRING, unique: true, allowNull: false},
+    department: {type: DataTypes.STRING, allowNull: false},
+    email: {type: DataTypes.STRING, unique: true, allowNull: false},
+    phone: {type: DataTypes.STRING, allowNull: false},
+    password: {type: DataTypes.STRING, required: true, allowNull: false}
 });
 
-module.exports = User
+User.associate = () => {
+    User.hasMany(Post, {
+        foreignKey: 'userId',
+        sourceKey: 'id'
+    });
+    User.hasMany(Comment, {
+        foreignKey: 'userId',
+        sourceKey: 'id'
+    })
+}
+User.sequelize.sync({ alter: true })
+return User
+}

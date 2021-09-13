@@ -1,13 +1,13 @@
-const config = require('../middleware/dbConfig');
-const sql = require('mssql')
-const database = require('../models/post')
+const config = require('../config/dbConfig');
+const sql = require('mssql/msnodesqlv8')
+const Post = require('../models/post')
 
 exports.createPost = (req, res, next) => {
     //req.body.post = JSON.parse(req.body.post);
     
     const url = req.protocol + '://' + req.get('host');
     if (req.file) {
-        database.posts.create({
+        Post.create({
             userId: req.body.userId,
             username: req.body.username,
             department: req.body.department,
@@ -17,7 +17,7 @@ exports.createPost = (req, res, next) => {
         }).then(
             () => {
                 res.status(201).json({
-                    message: 'Post and media added to database successfully!'
+                    message: 'Post and media added to Post successfully!'
                 }
                 );
             }
@@ -29,7 +29,7 @@ exports.createPost = (req, res, next) => {
             }
         ); 
     } else {
-        database.posts({
+        Post.create({
             userId: req.body.userId,
             username: req.body.username,
             department: req.body.department,
@@ -39,7 +39,7 @@ exports.createPost = (req, res, next) => {
         }).then(
             () => {
                 res.status(201).json({
-                    message: 'Post added to database successfully!'
+                    message: 'Post added to Post successfully!'
                 });
             }
         ).catch(
@@ -53,7 +53,7 @@ exports.createPost = (req, res, next) => {
 };
 
 exports.getOnePost = (req, res, next) => {
-    database.posts.findOne({
+    Post.findOne({
         _id:req.params.id
     })
     .then(
@@ -70,7 +70,7 @@ exports.getOnePost = (req, res, next) => {
 };
 
 exports.showAllPosts = (req, res, next) => {
-    database.posts.find().then(
+    Post.find().then(
         (posts) => {
             res.status(200).json(posts);
         }

@@ -1,12 +1,12 @@
 const Sequelize = require('sequelize')
-const config = require('../middleware/dbConfig')
+const config = require('../config/dbConfig')
 
-const sequelize = new Sequelize({
+const sequelize = new Sequelize(config.database, config.user, config.password,{
     server: config.server,
-    database: config.database,
-    user: config.user,
-    password: config.password,
-    dialect: 'mssql'
+    dialect: 'mssql',
+    dialectOptions: {
+        instanceName: config.instanceName
+    }
 })
 
 const database = {}
