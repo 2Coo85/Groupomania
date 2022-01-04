@@ -1,13 +1,17 @@
 const sql = require('mssql/msnodesqlv8')
 
 const dbConfig = new sql.ConnectionPool({
-    user: 'sa',
-    password: 'Mania01',
     server: '2COOLHP',
-    database: 'GroupoMania',
     dialect: 'mssql',
     driver: 'msnodesqlv8',
-    instanceName: 'SQLEXPRESS'
+    instanceName: 'MSSQLSERVER',
+    user: 'sa',
+    password: 'Mania01',
+    pool: {
+        max: 10,
+        min: 0,
+        idleTimeoutMillis: 30000
+    }
 })
  
 dbConfig.connect(
