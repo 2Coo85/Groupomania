@@ -30,38 +30,33 @@
 
 // module.exports = db;
 
-const Sequelize = require('sequelize')
+// const Sequelize = require('sequelize')
 
-const sequelize = new Sequelize('GMania', 'sa', 'Mania01', {
-    dialect: 'mssql',
-    server: '2COOLHP',
-    instanceName: 'MSSQLSERVER'
-})
+// const sequelize = new Sequelize('GMania', 'sa', 'Mania01', {
+//     dialect: 'mssql',
+//     server: '2COOLHP',
+//     instanceName: 'MSSQLSERVER'
+// })
 
-sequelize.authenticate().then(
-    () => {
-        console.log('Connected to db')
-    }
-).catch(
-    err => {
-        console.log('Unable to connect: ', err)
-    }
-)
-const db = {}
+// sequelize.authenticate().then(
+//     () => {
+//         console.log('Connected to db')
+//     }
+// ).catch(
+//     err => {
+//         console.log('Unable to connect: ', err)
+//     }
+// )
+// const db = {}
 
-db.Sequelize = Sequelize
-db.sequelize = sequelize
+// db.Sequelize = Sequelize
+// db.sequelize = sequelize
 
-db.users = require('./user')(sequelize, Sequelize)
-db.posts = require('./post')(sequelize, Sequelize)
-db.comments = require('./comments')(sequelize, Sequelize)
+// db.users = require('./user')(sequelize, Sequelize)
+// db.posts = require('./post')(sequelize, Sequelize)
 
-db.users.hasMany(db.posts, { foreignKey: 'userId' }, { onDelete: 'cascade' })
-db.users.hasMany(db.comments, { foreignKey: 'userId' }, { onDelete: 'cascade' })
-db.posts.hasMany(db.comments, { foreignKey: 'postId' }, { onDelete: 'cascade' })
+// db.users.hasMany(db.posts, { foreignKey: 'userId' }, { onDelete: 'cascade' })
 
-db.comments.belongsTo(db.users, { foreignKey: 'userId' })
-db.comments.belongsTo(db.posts, { foreignKey: 'postId' })
-db.posts.belongsTo(db.users, { foreignKey: 'userId' })
+// db.posts.belongsTo(db.users, { foreignKey: 'userId' })
 
-module.exports = db
+// module.exports = db

@@ -130,7 +130,7 @@ export default new Vuex.Store({
     async unloadUsers ({ commit }) {
       try {
         if (localStorage.getItem('token')) {
-          const response = await axios.get('http://localhost:1433/api/auth/users/')
+          const response = await axios.get('http://localhost:3000/api/auth/users/')
           commit('Set_Users', response.data)
           localStorage.setItem('Users', JSON.stringify(response.data))
         }
@@ -141,7 +141,7 @@ export default new Vuex.Store({
     async deleteUser ({ commit }) {
       try {
         await axios.delete(
-          'http://localhost:1433/api/auth/users/' + this.state.user._id,
+          'http://localhost:3000/api/auth/users/' + this.state.user._id,
           {
             headers: {
               authorization: 'Bearer ' + this.state.authToken
@@ -155,7 +155,7 @@ export default new Vuex.Store({
     },
     async newUser ({ commit }, data) {
       try {
-        const response = await axios.post('http://localhost:1433/api/auth/signup', {
+        const response = await axios.post('http://localhost:3000/api/auth/signup', {
           username: data.username,
           email: data.email,
           department: data.department,
@@ -200,7 +200,7 @@ export default new Vuex.Store({
     },
     async getUser ({ commit }) {
       try {
-        const response = await axios.get('http://localhost:1433/api/auth/user/' + this.getters.getUserId)
+        const response = await axios.get('http://localhost:3000/api/auth/user/' + this.getters.getUserId)
         const data = await response.data
         commit('One_User', data)
       } catch (error) {
@@ -212,7 +212,7 @@ export default new Vuex.Store({
         if (!JSON.parse(localStorage.getItem('authToken'))) {
           router.push('/home')
         }
-        const response = await axios.get('http://localhost:1433/api/post/', {
+        const response = await axios.get('http://localhost:3000/api/post/', {
           headers: {
             Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
@@ -241,7 +241,7 @@ export default new Vuex.Store({
     },
     async postsByDept ({ commit }) {
       try {
-        const response = await axios.get('http://localhost:1433/api/post/', {
+        const response = await axios.get('http://localhost:3000/api/post/', {
           headers: {
             Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
@@ -268,7 +268,7 @@ export default new Vuex.Store({
     },
     async addNewComment ({ commit }, data) {
       try {
-        const response = await axios.post('http://localhost:1433/api/comments/', data, {
+        const response = await axios.post('http://localhost:3000/api/comments/', data, {
           headers: {
             authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
@@ -280,7 +280,7 @@ export default new Vuex.Store({
     },
     async loadAllComments ({ commit }, data) {
       try {
-        const response = await axios.get('http://localhost:1433/api/comments/' + data._id, {
+        const response = await axios.get('http://localhost:3000/api/comments/' + data._id, {
           headers: {
             authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
@@ -294,7 +294,7 @@ export default new Vuex.Store({
     },
     async login ({ commit }, data) {
       try {
-        const response = await axios.post('http://localhost:1433/api/auth/login', {
+        const response = await axios.post('http://localhost:3000/api/auth/login', {
           email: data.email,
           password: data.password
         },

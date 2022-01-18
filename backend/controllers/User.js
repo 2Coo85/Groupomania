@@ -1,27 +1,27 @@
-const db = require('../models')
+//const db = require('../models')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const dbConfig = require('../config/dbConfig');
+const user = require('../models/user');
+//const dbConfig = require('../config/dbConfig');
 //const models = require('../models')
-const User = db.user
-const Op = db.Sequelize.Op
+const User = require('../models/user')
+//const Op = db.Sequelize.Op
 
-const authToken = user => {
-    token = jwt.sign({userId: user.id}, "newKey", {expiresIn: '24h'})
-    return { user, token }
-}
+const authToken = jwt.sign({userId: user.id}, 
+    "newKey",
+    {expiresIn: '24h'});
 
 exports.signUp = (req, res, next) => {
     bcrypt.hash(req.body.password, 10).then(
-        () => {
-            const user = {
+        (hash) => {
+            const user = new User({
                 username: req.body.username,
                 password: hash,
                 department: req.body.department,
                 email: req.body.email,
                 phone: req.body.phone
-            }
-            User.create(user).then(
+            })
+            user.save(user).then(
                 (user) => {
                     console.log('User created')
                     res.status(200).json(authToken(user))
@@ -61,18 +61,18 @@ exports.signUp = (req, res, next) => {
                 //     message: 'User added successfully'
                 // });
             //})
-            .catch(
-                (error) => {
-                    res.status(500).json({
-                        error: error
-                    });
-                }
-            );
+            // .catch(
+            //     (error) => {
+            //         res.status(500).json({
+            //             error: error
+            //         });
+            //     }
+            // );
         }
     ).catch(
         (error) => {
             res.status(501).json({
-                message: "Error has occured" + error
+                message: "Error has occured " + error
             })
         }
     )
@@ -119,7 +119,7 @@ exports.logIn = (req, res, next) => {
                     "newKey",
                     {expiresIn: '24h'});
                     res.status(200).json({
-                        userId: user.id,
+                        userId: user._id,
                         authToken: authToken,
                         user: user
                     });

@@ -5,8 +5,8 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, "newKey");
     const userId = decodedToken.userId;
-    if (req.userId && req.userId !== userId) {
-      throw "Invalid User Id!";
+    if (req.email && req.email !== email) {
+      throw "Invalid Email!";
     } else {
       next();
     }

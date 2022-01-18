@@ -12,8 +12,7 @@ exports.createPost = (req, res, next) => {
             username: req.body.username,
             department: req.body.department,
             title: req.body.title,
-            imageUrl: url + '/images/' + req.file.filename,
-            usersCommented: req.body.usersCommented
+            imageUrl: url + '/images/' + req.file.filename
         }).then(
             () => {
                 res.status(201).json({
@@ -34,8 +33,7 @@ exports.createPost = (req, res, next) => {
             username: req.body.username,
             department: req.body.department,
             title: req.body.title,
-            postText: req.body.postText,
-            usersCommented: req.body.usersCommented
+            postText: req.body.postText
         }).then(
             () => {
                 res.status(201).json({
