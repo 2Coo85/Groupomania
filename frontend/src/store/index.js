@@ -20,7 +20,6 @@ export default new Vuex.Store({
     authToken: localStorage.getItem('authToken') || null,
     department: [],
     //user: JSON.parse(localStorage.getItem('user')) || null,
-    comments: [],
     files: []
   },
   getters: {
@@ -64,12 +63,6 @@ export default new Vuex.Store({
     },
     getAuthToken: (state) => {
       return state.authToken
-    },
-    getAllComments: (state) => {
-      return state.posts.comments
-    },
-    getUserCommenting: (state) => {
-      return state.posts.usersCommented
     }
   },
   mutations: {
@@ -113,12 +106,6 @@ export default new Vuex.Store({
         state.posts.splice(index, 1, currentPost)
       }
     },
-    Add_Comment: (state, comments) => {
-      return state.comments.unshift(comments)
-    },
-    All_Comments: (state, comments) => {
-      state.comments = comments
-    },
     logout (state) {
       state.isUserLoggedIn = false
       state.user = ''
@@ -156,11 +143,12 @@ export default new Vuex.Store({
     async newUser ({ commit }, data) {
       try {
         const response = await axios.post('http://localhost:3000/api/auth/signup', {
+          userId: data.userId,
           username: data.username,
-          email: data.email,
           department: data.department,
-          password: data.password,
-          phone: data.phone
+          phone: data.phone,
+          email: data.email,
+          password: data.password
         },
         {
           headers: {
@@ -168,7 +156,7 @@ export default new Vuex.Store({
           }
         })
         const user = await response.data.user
-        const authToken = await response.data.authToken
+        const authToken = await response.data.token
         localStorage.setItem('authToken', JSON.stringify(authToken))
         localStorage.setItem('user', JSON.stringify(user))
         commit('auth_successful', { authToken, user })
@@ -262,32 +250,6 @@ export default new Vuex.Store({
         })
         commit('All_Posts', posts)
         commit('setDept', posts)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    async addNewComment ({ commit }, data) {
-      try {
-        const response = await axios.post('http://localhost:3000/api/comments/', data, {
-          headers: {
-            authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
-          }
-        })
-        commit('Add_Comment', JSON.stringify(response.data))
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    async loadAllComments ({ commit }, data) {
-      try {
-        const response = await axios.get('http://localhost:3000/api/comments/' + data._id, {
-          headers: {
-            authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
-          }
-        })
-        const comment = await response.data
-        commit('All_Comments', comment)
-        localStorage.setItem('comments', JSON.stringify(response.data))
       } catch (error) {
         console.log(error)
       }

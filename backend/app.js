@@ -1,3 +1,4 @@
+require('dotenv').config
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -7,6 +8,7 @@ const postRoutes = require('./routes/posts');
 const userRoutes = require('./routes/user');
 
 const app = express();
+mongoose.set('useCreateIndex', true)
 
 mongoose.connect(  'mongodb+srv://tc3085:S6vK5mmykEizcnP7@cluster0.zuqab.mongodb.net/start?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true })

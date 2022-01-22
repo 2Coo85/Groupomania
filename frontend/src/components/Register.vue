@@ -82,7 +82,7 @@ export default {
           password: this.password,
           phone: this.phone
         })
-        this.$router.push('/')
+        //this.$router.push('/')
       } catch (error) {
         console.log(error)
       }
