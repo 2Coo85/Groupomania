@@ -65,43 +65,67 @@ exports.signup = async (req, res, next) => {
     // )
 }
 
-exports.login = (req, res, next) => {
-    User.findOne({email: req.body.email}).then(
-        (user) => {
-            if (!user) {
-                return res.status(401).json({
-                    error: new Error('User not found!')
-                });
-            }
-            bcrypt.compare(req.body.password, user.password).then(
-                (valid) => {
-                    if (!valid){
-                        return res.status(401).json({
-                            error: new Error('Incorrect password!')
-                        });
-                    }
-                    const token = jwt.sign(
-                    {userId: user._id},
-                    'RANDOM_TOKEN_SECRET',
-                    {expiresIn: '24h'});
-                    res.status(200).json({
-                        userId: user._id,
-                        token: token
-                    });
-                }
-            ).catch(
-                (error) => {
-                    res.status(500).json({
-                        error: error
-                    });
-                }
-            );
+exports.login = async (req, res, next) => {
+    try {
+        const { email, password } = req.body
+
+        if(!(email && password)){
+            res.status(400).send("All fields required")
         }
-    ).catch(
-        (error) => {
-            res.status(500).json({
-                error: error
-            });
+
+        const user = await User.findOne({ email })
+
+        if(user && (await bcrypt.compare(password, user.password))) {
+            const token = jwt.sign(
+                { user_id: user._id, email },
+                process.env.TOKEN_KEY,
+                {expiresIn: "12h"}
+            )
+
+            user.token = token
+
+            res.status(200).json(user)
         }
-    );
+        res.status(400).send("invalid login")
+    } catch (error) {
+        console.log(error)
+    }
+    // User.findOne({email: req.body.email}).then(
+    //     (user) => {
+    //         if (!user) {
+    //             return res.status(401).json({
+    //                 error: new Error('User not found!')
+    //             });
+    //         }
+    //         bcrypt.compare(req.body.password, user.password).then(
+    //             (valid) => {
+    //                 if (!valid){
+    //                     return res.status(401).json({
+    //                         error: new Error('Incorrect password!')
+    //                     });
+    //                 }
+    //                 const token = jwt.sign(
+    //                 {userId: user._id},
+    //                 'RANDOM_TOKEN_SECRET',
+    //                 {expiresIn: '24h'});
+    //                 res.status(200).json({
+    //                     userId: user._id,
+    //                     token: token
+    //                 });
+    //             }
+    //         ).catch(
+    //             (error) => {
+    //                 res.status(500).json({
+    //                     error: error
+    //                 });
+    //             }
+    //         );
+    //     }
+    // ).catch(
+    //     (error) => {
+    //         res.status(500).json({
+    //             error: error
+    //         });
+    //     }
+    // );
 }
