@@ -13,16 +13,16 @@ export default {
   components: {
     NavBar
   },
-  mounted () {
-    this.$store.dispatch('loadAllPosts')
-  },
-  filters: {
-    getPostsByDept: state => department => {
-      const postByDept = state.posts
-        .filter(post => post.department === department)
-      return postByDept
-    }  
-  },
+  // mounted () {
+  //   this.$store.dispatch('loadAllPosts')
+  // },
+  // filters: {
+  //   getPostsByDept: state => department => {
+  //     const postByDept = state.posts
+  //       .filter(post => post.department === department)
+  //     return postByDept
+  //   }  
+  //},
 }
 </script>
 

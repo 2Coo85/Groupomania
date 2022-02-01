@@ -1,7 +1,7 @@
 <template>
     <div id="main-nav">
         <b-navbar id="app-navbar">
-            <b-navbar-brand href="/home"><b-img :src="require('../assets/icon.jpg')" height="50"></b-img>
+            <b-navbar-brand href="/main"><b-img :src="require('../assets/icon.jpg')" height="50"></b-img>
             </b-navbar-brand>
             <b-navbar-toggle target="navbar-toggle-collapse">
                 <template #default="{ expanded }">

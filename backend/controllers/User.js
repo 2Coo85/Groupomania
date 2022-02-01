@@ -77,16 +77,18 @@ exports.login = async (req, res, next) => {
 
         if(user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign(
-                { user_id: user._id, email },
+                { userId: user._id },
                 process.env.TOKEN_KEY,
                 {expiresIn: "12h"}
             )
 
             user.token = token
+            console.log(token)
+            console.log(user)
 
             res.status(200).json(user)
         }
-        res.status(400).send("invalid login")
+        res.status(400).json("invalid login")
     } catch (error) {
         console.log(error)
     }

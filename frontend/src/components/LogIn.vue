@@ -17,7 +17,7 @@
                 <b-form-group label="Password" label-for="form-password">
                     <validation-provider rules="required" v-slot="{ errors }">
                         <b-form-input
-                            v-model="password"
+                            v-model="password" autocomplete="true"
                             id="form-password"
                             type="password"
                             size="sm"

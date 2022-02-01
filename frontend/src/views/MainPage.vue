@@ -84,19 +84,16 @@ export default {
     ...mapGetters([
       'getAllPosts',
       'getPostsByDept',
-      'getAllComments'
+      'getUserName'
     ]),
     loadAllPosts () {
       return this.getAllPosts
-    },
-    loadComments () {
-      return this.getAllComments
     },
     ...mapState([
       'posts'
     ]),
     user () {
-      return this.$store.state.user.username
+      return this.getUserName
     }
   },
   mounted () {

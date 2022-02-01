@@ -19,7 +19,7 @@ export default new Vuex.Store({
     oneUser: [],
     authToken: localStorage.getItem('authToken') || null,
     department: [],
-    //user: JSON.parse(localStorage.getItem('user')) || null,
+    user: JSON.parse(localStorage.getItem('user')) || null,
     files: []
   },
   getters: {
@@ -62,7 +62,7 @@ export default new Vuex.Store({
       return state.savedPosts
     },
     getAuthToken: (state) => {
-      return state.authToken
+      return state.user.token
     }
   },
   mutations: {
@@ -70,16 +70,14 @@ export default new Vuex.Store({
       return state.user
     },
     Delete_User: (state) => {
-      state.authToken = null
+      state.user.token = null
       state.user = ''
-      localStorage.removeItem('authToken')
-      localStorage.removeItem('user')
     },
     One_User: (state, oneUser) => {
       state.oneUser = oneUser
     },
     auth_successful: (state, { authToken, user }) => {
-      state.authToken = authToken
+      state.token = authToken
       state.user = user
     },
     setDept: (state, department) => {
@@ -143,7 +141,6 @@ export default new Vuex.Store({
     async newUser ({ commit }, data) {
       try {
         const response = await axios.post('http://localhost:3000/api/auth/signup', {
-          userId: data.userId,
           username: data.username,
           department: data.department,
           phone: data.phone,
@@ -155,6 +152,7 @@ export default new Vuex.Store({
             authorization: 'Bearer ' + localStorage.getItem('authToken')
           }
         })
+        console.log(response)
         const user = await response.data.user
         const authToken = await response.data.token
         localStorage.setItem('authToken', JSON.stringify(authToken))
@@ -265,12 +263,13 @@ export default new Vuex.Store({
             authorization: 'Bearer ' + localStorage.getItem('authToken')
           }
         })
-        const authToken = await response.data.authToken
+        console.log(response)
+        const authToken = await response.data.token
         const user = await response.data.user
         localStorage.setItem('authToken', JSON.stringify(authToken))
         localStorage.setItem('user', JSON.stringify(user))
         commit('auth_successful', { user, authToken })
-        router.push('/home')
+        router.push('/main')
       } catch (error) {
         console.log(error)
       }

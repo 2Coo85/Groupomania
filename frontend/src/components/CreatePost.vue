@@ -74,7 +74,7 @@ export default {
           if (this.imageFile !== false) {
             await this.$store.dispatch('createPost',
               {
-                userId: this.$store.state.user._id,
+                userId: this.$store.state.userId,
                 username: this.$store.state.user.username,
                 title: this.title,
                 department: this.department,
@@ -84,7 +84,7 @@ export default {
               {
                 headers: {
                   'Content-Type': 'multipart/form-data',
-                  authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+                  authorization: 'Bearer ' + JSON.parse(authToken)
                 }
               }).then(
               () => {
@@ -106,7 +106,7 @@ export default {
         } else if (this.postText) {
           await this.$store.dispatch('createPost',
             {
-              userId: this.$store.state.user._id,
+              userId: this.$store.state.userId,
               username: this.$store.state.user.username,
               title: this.title,
               department: this.department,

@@ -5,7 +5,6 @@ exports.createPost = (req, res, next) => {
     req.body.post = JSON.parse(req.body.post);
     const url = req.protocol + '://' + req.get('host');
     const post = new Post({
-        userId: req.body.post.userId,
         username: req.body.post.username,
         imageUrl: url + '/images/' + req.file.filename,
         department: req.body.post.department,

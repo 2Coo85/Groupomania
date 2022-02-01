@@ -45,18 +45,12 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import Comments from './Comments.vue'
 
 export default {
-  components: { Comments },
-  componets: {
-    Comments
-  },
-  props: ['post', 'comments'],
+  
+  props: ['post'],
   data () {
     return {
-      commentText: '',
-      comment: [],
       title: '',
       postText: '',
       imageUrl: '',
@@ -71,31 +65,6 @@ export default {
     ...mapState([
       'posts'
     ])
-  },
-  methods: {
-    async addComment (postId) {
-      try {
-        if (this.commentText !== '') {
-          await this.$store.dispatch('addNewComment', {
-            postId: postId,
-            username: this.$store.state.user.username,
-            department: this.$store.state.user.department,
-            commentText: this.commentText
-          }).then(
-            () => {
-              console.log('New Comment added')
-              console.log(postId)
-            }
-          )
-          this.$store.dispatch('loadAllPosts')
-          this.commentText = ''
-        } else {
-          this.commentText = ''
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
   }
 }
 </script>
