@@ -19,24 +19,6 @@
                         <b-img class="image" v-else :src="post.imageUrl" alt="media"></b-img>
                       </div>
                     </b-card-body>
-                    <div>
-                      <b-form class="comment-footer" @submit.prevent='addComment(post._id)'>
-                          <b-form-group>
-                            <b-form-textarea v-model="commentText" rows="3" placeholder="Enter comments here"></b-form-textarea>
-                          </b-form-group>
-                          <div>
-                            <b-button type="submit" class="form-control btn-submit commentBtn" @submit="addComment">Submit Comment</b-button>
-                          </div>
-                       </b-form>
-                    </div>
-                <template v-slot:footer>
-                    <div class="form-group">
-                      <div>
-                        <Comments v-for="comment in post.comments" :key="comment.id"
-                        :comment="comment" />
-                      </div>
-                  </div>
-                </template>
               </b-card>
             </div>
         </div>

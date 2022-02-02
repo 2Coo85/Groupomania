@@ -162,7 +162,7 @@ export default new Vuex.Store({
           }
         })
         console.log(response)
-        const user = await response.data.user
+        const user = await response.data
         const authToken = await response.data.token
         localStorage.setItem('authToken', JSON.stringify(authToken))
         localStorage.setItem('user', JSON.stringify(user))
@@ -181,7 +181,7 @@ export default new Vuex.Store({
       postForm.append('file', data.file)
 
       try {
-        const response = await axios.post('http://localhost:3000/api/post/', postForm,
+        const response = await axios.post('http://localhost:3000/api/posts/', postForm,
           {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -207,7 +207,7 @@ export default new Vuex.Store({
         if (!JSON.parse(localStorage.getItem('authToken'))) {
           router.push('/main')
         }
-        const response = await axios.get('http://localhost:3000/api/post/', {
+        const response = await axios.get('http://localhost:3000/api/posts/', {
           headers: {
             Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
@@ -223,7 +223,7 @@ export default new Vuex.Store({
     },
     async postsByDept ({ commit }) {
       try {
-        const response = await axios.get('http://localhost:3000/api/post/', {
+        const response = await axios.get('http://localhost:3000/api/posts/', {
           headers: {
             Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
           }
@@ -247,7 +247,7 @@ export default new Vuex.Store({
         })
         console.log(response)
         const authToken = await response.data.token
-        const user = await response.data.user
+        const user = await response.data
         localStorage.setItem('authToken', JSON.stringify(authToken))
         localStorage.setItem('user', JSON.stringify(user))
         commit('auth_successful', { user, authToken })

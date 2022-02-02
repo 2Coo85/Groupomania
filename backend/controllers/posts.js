@@ -2,29 +2,53 @@ const Post = require('../models/post');
 const fs = require('fs');
 
 exports.createPost = (req, res, next) => {
-    req.body.post = JSON.parse(req.body.post);
+    //req.body.post = JSON.parse(req.body.post);
     const url = req.protocol + '://' + req.get('host');
-    const post = new Post({
-        username: req.body.post.username,
-        imageUrl: url + '/images/' + req.file.filename,
-        department: req.body.post.department,
-        title: req.body.post.title,
-        content: req.body.post.content,
-        
-    });
-    post.save().then(
-        () => {
-            res.status(201).json({
-                message: 'New Post added to database successfully!'
-            });
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
+    if (req.file) {
+        const post = new Post({
+            userId: req.body.userId,
+            username: req.body.username,
+            imageUrl: url + '/images/' + req.file.filename,
+            department: req.body.department,
+            title: req.body.title,
+            content: req.body.content
+        });
+        post.save().then(
+            () => {
+                res.status(201).json({
+                    message: 'New Post with image added to database successfully!'
+                });
+            }
+        ).catch(
+            (error) => {
+                res.status(400).json({
+                    error: error
+                });
+            }
+        );  
+    } else {
+        const post = new Post({
+            userId: req.body.userId,
+            username: req.body.username,
+            department: req.body.department,
+            title: req.body.title,
+            content: req.body.content
+        });
+        post.save().then(
+            () => {
+                res.status(201).json({
+                    message: 'New Post added to database successfully!'
+                });
+            }
+        ).catch(
+            (error) => {
+                res.status(400).json({
+                    error: error
+                });
+            }
+        );
+    }
+    
 };
 
 exports.getOnePost = (req, res, next) => {
@@ -103,7 +127,7 @@ exports.updatePost = (req, res, next) => {
 }
 
 exports.deletePost = (req, res, next) => {
-    post.findOne({_id: req.params.id}).then(
+    Post.findOne({_id: req.params.id}).then(
         (post) => {
             const filename = post.imageUrl.split('/images/')[1];
             fs.unlink('images/' + filename, () => {
@@ -126,7 +150,7 @@ exports.deletePost = (req, res, next) => {
 };
 
 exports.getAllPosts = (req, res, next) => {
-    post.find().then(
+    Post.find().then(
         (posts) => {
             res.status(200).json(posts);
         }

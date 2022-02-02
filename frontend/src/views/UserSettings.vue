@@ -4,7 +4,7 @@
         <div class="container rounded bg-white mt-5" id="user-acct">
             <div class="row">
                 <div class="col-md-2 border-right">
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5"><b-img :src="require('../assets/icon.png')" height="75"></b-img><span class="font-weight-bold"> {{ getUserName }} </span></div>
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5"><b-img :src="require('../assets/icon.png')" height="75"></b-img><span class="font-weight-bold"> {{ getUser }} </span></div>
                 </div>
                     <div class="col-md-10">
                         <div class="p-3 py-5">
@@ -40,7 +40,7 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters([
-      'getUserName',
+      'getUser',
       'getUserDepartment',
       'getUserEmail',
       'getUserPhone'

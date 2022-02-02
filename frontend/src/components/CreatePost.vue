@@ -74,17 +74,16 @@ export default {
           if (this.imageFile !== false) {
             await this.$store.dispatch('createPost',
               {
-                userId: this.$store.state.userId,
+                userId: this.$store.state.user._id,
                 username: this.$store.state.user.username,
                 title: this.title,
                 department: this.department,
-                postText: this.postText,
                 file: this.imageFile
               },
               {
                 headers: {
                   'Content-Type': 'multipart/form-data',
-                  authorization: 'Bearer ' + JSON.parse(authToken)
+                  authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
                 }
               }).then(
               () => {
@@ -93,12 +92,12 @@ export default {
             )
             this.$store.dispatch('loadAllPosts')
             this.imageFile = false
-            this.content = ''
+            this.postText = ''
             this.title = ''
             this.department = null
           } else {
             this.imageFile = false
-            this.content = ''
+            this.postText = ''
             this.title = ''
             this.department = null
             console.log('invalid')
@@ -106,7 +105,7 @@ export default {
         } else if (this.postText) {
           await this.$store.dispatch('createPost',
             {
-              userId: this.$store.state.userId,
+              userId: this.$store.state.user._id,
               username: this.$store.state.user.username,
               title: this.title,
               department: this.department,
@@ -125,7 +124,7 @@ export default {
           this.postText = ''
         }
       } catch (error) {
-        this.file = null
+        this.imageFile = null
         this.postText = ''
         this.title = ''
         this.department = null
