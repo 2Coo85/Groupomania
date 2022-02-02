@@ -10,7 +10,7 @@
                         <div class="p-3 py-5">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex flex-row align-items-center back"><i class="fa fa-long-arrow-left"></i>
-                                    <router-link to="/home"><h6>Back to home</h6></router-link>
+                                    <router-link to="/main"><h6>Back to home</h6></router-link>
                                 </div>
                             </div>
                             <div class="row mt-3">

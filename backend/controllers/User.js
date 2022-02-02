@@ -131,3 +131,23 @@ exports.login = async (req, res, next) => {
     //     }
     // );
 }
+exports.addReadPost = (req, res, next) => {
+    User.findOne({_id: req.params.id}).then(
+        (user) => {
+            if (!user.read.includes(req.body.read.read.toString())) {
+                user.read.push(req.body.read.read.toString())
+            }
+            user.save().then(
+                () => {
+                    res.status(201).json({
+                        message: 'Post has been read.', user
+                    })
+                }
+            ).catch(
+                (err) => res.status(500).json({
+                    error: err
+                })
+            )
+        }
+    )
+}
