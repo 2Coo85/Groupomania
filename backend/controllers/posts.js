@@ -1,17 +1,15 @@
 const Post = require('../models/post');
-const fs = require('fs');
 
 exports.createPost = (req, res, next) => {
     //req.body.post = JSON.parse(req.body.post);
     const url = req.protocol + '://' + req.get('host');
-    if (req.file) {
+    if (req.file || req.body.content == '') {
         const post = new Post({
             userId: req.body.userId,
             username: req.body.username,
-            imageUrl: url + '/images/' + req.file.filename,
             department: req.body.department,
             title: req.body.title,
-            content: req.body.content
+            file: url + '/images/' + req.file.filename
         });
         post.save().then(
             () => {
@@ -26,7 +24,7 @@ exports.createPost = (req, res, next) => {
                 });
             }
         );  
-    } else {
+    } else if( req.body.content !== '') {
         const post = new Post({
             userId: req.body.userId,
             username: req.body.username,
@@ -126,28 +124,6 @@ exports.updatePost = (req, res, next) => {
     );
 }
 
-exports.deletePost = (req, res, next) => {
-    Post.findOne({_id: req.params.id}).then(
-        (post) => {
-            const filename = post.imageUrl.split('/images/')[1];
-            fs.unlink('images/' + filename, () => {
-                post.deleteOne({_id: req.params.id}).then(
-                    () => {
-                        res.status(200).json({
-                            message: 'Deleted!'
-                        });
-                    }
-                ).catch(
-                    (error) => {
-                        res.status(400).json({
-                            error: error
-                        });
-                    }
-                );
-            });
-        }
-    );  
-};
 
 exports.getAllPosts = (req, res, next) => {
     Post.find().then(

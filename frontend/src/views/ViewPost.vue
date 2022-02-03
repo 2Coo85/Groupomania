@@ -3,7 +3,7 @@
     <router-link :to="'/main'">Back To Home</router-link>
     <h3>{{ post.title }}</h3>
     <b-card-text v-if="post.postText">{{ post.postText }}</b-card-text>
-    <b-img class="image" v-else :src="post.imageUrl" alt="media"></b-img>
+    <b-img class="image" v-else :src="post.file" alt="media"></b-img>
 </div>
 </template>
 

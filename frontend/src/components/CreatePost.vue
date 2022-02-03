@@ -16,7 +16,7 @@
               </b-form-group>
               <b-form-group class="row px-5 post-header">
                 <div>
-                  <b-form-textarea class="text-muted bg-light col-12 mt-2 mb-1" placeholder="what's on your mind today?" name="postText" v-model="postText"></b-form-textarea>
+                  <b-form-textarea class="text-muted bg-light col-12 mt-2 mb-1" placeholder="what's on your mind today?" name="content" v-model="content"></b-form-textarea>
                 </div>
               </b-form-group>
               <b-form-group class="row post-header">
@@ -46,9 +46,9 @@ export default {
   },
   data () {
     return {
-      postText: '',
+      content: '',
       uploadedImage: false,
-      imageFile: false,
+      file: false,
       title: '',
       department: '',
       fileName: ''
@@ -65,20 +65,21 @@ export default {
       fr.readAsDataURL(file)
       fr.addEventListener('load', () => {
         this.uploadedImage = fr.result
-        this.imageFile = file
+        this.file = file
       })
     },
     async createPost () {
       try {
-        if (this.imageFile) {
-          if (this.imageFile !== false) {
+        if (this.file) {
+          if (this.file !== false) {
             await this.$store.dispatch('createPost',
               {
                 userId: this.$store.state.user._id,
                 username: this.$store.state.user.username,
                 title: this.title,
                 department: this.department,
-                file: this.imageFile
+                file: this.file,
+                content: ''
               },
               {
                 headers: {
@@ -91,41 +92,41 @@ export default {
               }
             )
             this.$store.dispatch('loadAllPosts')
-            this.imageFile = false
-            this.postText = ''
+            this.file = false
+            this.content = ''
             this.title = ''
             this.department = null
           } else {
-            this.imageFile = false
-            this.postText = ''
+            this.file = false
+            this.content = ''
             this.title = ''
             this.department = null
             console.log('invalid')
           }
-        } else if (this.postText) {
+        } else if (this.content) {
           await this.$store.dispatch('createPost',
             {
               userId: this.$store.state.user._id,
               username: this.$store.state.user.username,
               title: this.title,
               department: this.department,
-              postText: this.postText
+              content: this.content
             }).then(
             () => {
               console.log('Post added successfully')
             }
           )
           this.$store.dispatch('loadAllPosts')
-          this.postText = ''
+          this.content = ''
           this.title = ''
           this.department = null
         } else {
           console.log('not posted')
-          this.postText = ''
+          this.content = ''
         }
       } catch (error) {
-        this.imageFile = null
-        this.postText = ''
+        this.file = null
+        this.content = ''
         this.title = ''
         this.department = null
         console.log(error)

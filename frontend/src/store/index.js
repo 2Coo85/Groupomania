@@ -177,7 +177,7 @@ export default new Vuex.Store({
       postForm.append('username', data.username)
       postForm.append('title', data.title)
       postForm.append('department', data.department)
-      postForm.append('postText', data.postText)
+      postForm.append('content', data.content)
       postForm.append('file', data.file)
 
       try {

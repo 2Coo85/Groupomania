@@ -15,8 +15,8 @@
                 </template>
                     <b-card-body class="mt-1">
                       <div class="form-group post-body">
-                        <b-card-text v-if="post.postText">{{ post.postText }}</b-card-text>
-                        <b-img class="image" v-else :src="post.imageUrl" alt="media"></b-img>
+                        <b-card-text v-if="post.content">{{ post.content }}</b-card-text>
+                        <b-img class="image" v-else-if="post.file" :src="post.file" alt="media"></b-img>
                       </div>
                     </b-card-body>
               </b-card>
@@ -34,8 +34,8 @@ export default {
   data () {
     return {
       title: '',
-      postText: '',
-      imageUrl: '',
+      content: '',
+      file: '',
       selectedPost: null
     }
   },
