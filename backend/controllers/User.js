@@ -66,88 +66,75 @@ exports.signup = async (req, res, next) => {
 }
 
 exports.login = async (req, res, next) => {
-    try {
-        const { email, password } = req.body
+    // try {
+    //     const { email, password } = req.body
 
-        if(!(email && password)){
-            res.status(400).send("All fields required")
-        }
-
-        const user = await User.findOne({ email })
-
-        if(user && (await bcrypt.compare(password, user.password))) {
-            const token = jwt.sign(
-                { userId: user._id },
-                process.env.TOKEN_KEY,
-                {expiresIn: "12h"}
-            )
-
-            user.token = token
-            console.log(token)
-            console.log(user)
-
-            res.status(200).json(user)
-        }
-        res.status(400).json("invalid login")
-    } catch (error) {
-        console.log(error)
-    }
-    // User.findOne({email: req.body.email}).then(
-    //     (user) => {
-    //         if (!user) {
-    //             return res.status(401).json({
-    //                 error: new Error('User not found!')
-    //             });
-    //         }
-    //         bcrypt.compare(req.body.password, user.password).then(
-    //             (valid) => {
-    //                 if (!valid){
-    //                     return res.status(401).json({
-    //                         error: new Error('Incorrect password!')
-    //                     });
-    //                 }
-    //                 const token = jwt.sign(
-    //                 {userId: user._id},
-    //                 'RANDOM_TOKEN_SECRET',
-    //                 {expiresIn: '24h'});
-    //                 res.status(200).json({
-    //                     userId: user._id,
-    //                     token: token
-    //                 });
-    //             }
-    //         ).catch(
-    //             (error) => {
-    //                 res.status(500).json({
-    //                     error: error
-    //                 });
-    //             }
-    //         );
+    //     if(!(email && password)){
+    //         res.status(400).send("All fields required")
     //     }
-    // ).catch(
-    //     (error) => {
-    //         res.status(500).json({
-    //             error: error
-    //         });
+
+    //     const user = await User.findOne({ email })
+
+    //     if(user && (await bcrypt.compare(password, user.password))) {
+    //         const token = jwt.sign(
+    //             { userId: user._id, email },
+    //             process.env.TOKEN_KEY,
+    //             {expiresIn: "12h"}
+    //         )
+
+    //         user.token = token
+    //         console.log(token)
+    //         console.log(user)
+
+    //         res.status(200).json(user)
     //     }
-    // );
-}
-exports.addReadPost = (req, res, next) => {
-    User.findOne({_id: req.params.id}).then(
+    //     res.status(400).json("invalid login")
+    // } catch (error) {
+    //     console.log(error)
+    // }
+    User.findOne({email: req.body.email}).then(
         (user) => {
-            if (!user.read.includes(req.body.read.read.toString())) {
-                user.read.push(req.body.read.read.toString())
+            if (!user) {
+                return res.status(401).json({
+                    error: new Error('User not found!')
+                });
             }
-            user.save().then(
-                () => {
-                    res.status(201).json({
-                        message: 'Post has been read.', user
-                    })
+            bcrypt.compare(req.body.password, user.password).then(
+                (valid) => {
+                    if (!valid){
+                        return res.status(401).json({
+                            error: new Error('Incorrect password!')
+                        });
+                    }
+                    const token = jwt.sign(
+                    {userId: user._id},
+                    process.env.TOKEN_KEY,
+                    {expiresIn: '24h'});
+                    console.log(token);
+                    res.status(200).json({
+                        userId: user._id,
+                        username: user.username, 
+                        department: user.department, 
+                        phone: user.phone, email: user.email,
+                        password: user.password,
+                        read: user.read,
+                        token: token
+                    });
                 }
             ).catch(
-                (err) => res.status(500).json({
-                    error: err
-                })
-            )
+                (error) => {
+                    res.status(500).json({
+                        error: error
+                    });
+                }
+            );
         }
-    )
+    ).catch(
+        (error) => {
+            res.status(500).json({
+                error: error
+            });
+        }
+    );
 }
+

@@ -8,8 +8,7 @@ var userSchema = mongoose.Schema({
     phone: {type: String, required: true},
     email: {type: String, index: true, required: true, unique: true},
     password: {type: String, required: true},
-    token: {type: String},
-    read: {type: [String], required: true}
+    token: {type: String}
 });
 
 userSchema.plugin(uniqueValidator);

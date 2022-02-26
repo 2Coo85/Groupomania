@@ -79,7 +79,7 @@ exports.updatePost = (req, res, next) => {
             username: req.body.post.username
         };
     } else {
-        post.findOne({_id: req.params.id}).then(
+        post.find({_id: req.params.id}).then(
             (postRes) => {
             post = {
                 imageUrl: postRes.imageUrl,

@@ -28,7 +28,7 @@ export default new Vuex.Store({
       return state.user.username
     },
     getUserId: (state) => {
-      return state.user._id
+      return state.user.userId
     },
     getUserDepartment: state => {
       return state.user.department
@@ -116,8 +116,11 @@ export default new Vuex.Store({
       localStorage.removeItem('authToken')
       localStorage.removeItem('user')
     },
-    setReadPost (state, readPosts) {
-      state.readPosts.push(readPosts)
+    Edit_Post: (state, posts) => {
+      return state.posts.unshift(posts)
+    },
+    Delete_Post: (state, posts) => {
+      state.posts.pop(posts._id)
     }
   },
   actions: {
@@ -149,6 +152,7 @@ export default new Vuex.Store({
     },
     async newUser ({ commit }, data) {
       try {
+        const token = this.getters.getAuthToken
         const response = await axios.post('http://localhost:3000/api/auth/signup', {
           username: data.username,
           department: data.department,
@@ -158,7 +162,7 @@ export default new Vuex.Store({
         },
         {
           headers: {
-            authorization: 'Bearer ' + localStorage.getItem('authToken')
+            authorization: 'Bearer ' + token
           }
         })
         console.log(response)
@@ -236,13 +240,14 @@ export default new Vuex.Store({
     },
     async login ({ commit }, data) {
       try {
+        const token = this.getters.getAuthToken
         const response = await axios.post('http://localhost:3000/api/auth/login', {
           email: data.email,
           password: data.password
         },
         {
           headers: {
-            authorization: 'Bearer ' + localStorage.getItem('authToken')
+            authorization: 'Bearer ' + token
           }
         })
         console.log(response)
@@ -256,13 +261,38 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-    async readPost ({ commit }, data){
+    async editPost ({ commit }, data){
+      
       try {
-        const response = await axios.post(`http://localhost:3000/api/auth/user/` + this.state.user._id + '/read', {
-          read: data
+        const editForm = new FormData()
+        editForm.append('content', data.content)
+        editForm.append('file', data.file)
+
+        //edit post information
+        const response = await axios.put('http://localhost:3000/api/posts/', editForm,
+        {
+          headers: { 'Content-Type': 'multipart/form-data',
+          Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+          }
         })
-        const readPost = await response.data.user.read
-        commit('setReadPosts', readPost)
+        commit('Edit_Post', response.data)
+
+      }catch (error) {
+        console.error(error);
+      }
+      
+    },
+    async deletePost ({ commit }) {
+      try {
+        await axios.delete(
+          `http://localhost:3000/api/auth/posts/${post._id}`,
+          {
+            headers: {
+              authorization: 'Bearer ' + localStorage.getItem('authToken')
+            }
+          }
+        )
+        commit('Delete_Post')
       } catch (error) {
         console.log(error)
       }

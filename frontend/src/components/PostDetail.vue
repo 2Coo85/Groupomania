@@ -72,6 +72,8 @@ export default {
   .modal-body {
     position: relative;
     padding: 20px 10px;
+    justify-content: center;
+    align-items: center;
   }
 
   .btn-close {

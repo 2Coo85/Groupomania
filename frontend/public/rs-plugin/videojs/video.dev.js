@@ -128,24 +128,24 @@ vjs.CoreObject = vjs['CoreObject'] = function(){};
  * @this {*}
  */
 vjs.CoreObject.extend = function(props){
-  var init, subObj;
+  var beforeCreate, subObj;
 
   props = props || {};
-  // Set up the constructor using the supplied init method
-  // or using the init of the parent object
+  // Set up the constructor using the supplied beforeCreate method
+  // or using the beforeCreate of the parent object
   // Make sure to check the unobfuscated version for external libs
-  init = props['init'] || props.init || this.prototype['init'] || this.prototype.init || function(){};
+  beforeCreate = props['beforeCreate'] || props.beforeCreate || this.prototype['beforeCreate'] || this.prototype.beforeCreate || function(){};
   // In Resig's simple class inheritance (previously used) the constructor
-  //  is a function that calls `this.init.apply(arguments)`
+  //  is a function that calls `this.beforeCreate.apply(arguments)`
   // However that would prevent us from using `ParentObject.call(this);`
-  //  in a Child constuctor because the `this` in `this.init`
-  //  would still refer to the Child and cause an inifinite loop.
+  //  in a Child constuctor because the `this` in `this.beforeCreate`
+  //  would still refer to the Child and cause an inifbeforeCreatee loop.
   // We would instead have to do
-  //    `ParentObject.prototype.init.apply(this, argumnents);`
+  //    `ParentObject.prototype.beforeCreate.apply(this, argumnents);`
   //  Bleh. We're not creating a _super() function, so it's good to keep
   //  the parent constructor reference simple.
   subObj = function(){
-    init.apply(this, arguments);
+    beforeCreate.apply(this, arguments);
   };
 
   // Inherit from this object's prototype
@@ -986,7 +986,7 @@ vjs.formatTime = function(seconds, guide) {
       gh = Math.floor(guide / 3600);
 
   // handle invalid times
-  if (isNaN(seconds) || seconds === Infinity) {
+  if (isNaN(seconds) || seconds === InfbeforeCreatey) {
     // '-' is false for all relational operators (e.g. <, >=) so this setting
     // will add the minimum number of fields specified by the guide
     h = m = s = '-';
@@ -1193,7 +1193,7 @@ vjs.findPosition = function(el) {
  */
 vjs.Component = vjs.CoreObject.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     this.player_ = player;
 
     // Make a copy of prototype.options_ to protect against overriding global defaults
@@ -1215,10 +1215,10 @@ vjs.Component = vjs.CoreObject.extend({
     this.childNameIndex_ = {};
 
     // Add any child components in options
-    this.initChildren();
+    this.beforeCreateChildren();
 
     this.ready(ready);
-    // Don't want to trigger ready here or it will before init is actually
+    // Don't want to trigger ready here or it will before beforeCreate is actually
     // finished for all children that run this constructor
   }
 });
@@ -1308,7 +1308,7 @@ vjs.Component.prototype.options_;
  * {
  *   children: {
  *     'childOne': { 'foo': 'baz', 'asdf': 'fdsa', 'abc': '123' },
- *     'childTwo': null, // Disabled. Won't be initialized.
+ *     'childTwo': null, // Disabled. Won't be beforeCreateialized.
  *     'childThree': {},
  *     'childFour': {}
  *   }
@@ -1528,9 +1528,9 @@ vjs.Component.prototype.removeChild = function(component){
 };
 
 /**
- * Initialize default child components from options
+ * beforeCreateialize default child components from options
  */
-vjs.Component.prototype.initChildren = function(){
+vjs.Component.prototype.beforeCreateChildren = function(){
   var options = this.options_;
 
   if (options && options['children']) {
@@ -1620,14 +1620,14 @@ vjs.Component.prototype.trigger = function(type, event){
 vjs.Component.prototype.isReady_;
 
 /**
- * Trigger ready as soon as initialization is finished.
+ * Trigger ready as soon as beforeCreateialization is finished.
  *   Allows for delaying ready. Override on a sub class prototype.
- *   If you set this.isReadyOnInitFinish_ it will affect all components.
+ *   If you set this.isReadyOnbeforeCreateFinish_ it will affect all components.
  *   Specially used when waiting for the Flash player to asynchrnously load.
  *   @type {Boolean}
  *   @private
  */
-vjs.Component.prototype.isReadyOnInitFinish_ = true;
+vjs.Component.prototype.isReadyOnbeforeCreateFinish_ = true;
 
 /**
  * List of ready listeners
@@ -1905,7 +1905,7 @@ vjs.Component.prototype.emitTapEvents = function(){
  */
 vjs.Button = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
 
     var touchstart = false;
@@ -1980,7 +1980,7 @@ vjs.Button.prototype.onBlur = function(){
  */
 vjs.Slider = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
 
     // Set property names to bar and handle to match with the child Slider class is looking for
@@ -2047,7 +2047,7 @@ vjs.Slider.prototype.onMouseUp = function() {
 };
 
 vjs.Slider.prototype.update = function(){
-  // In VolumeBar init we have a setTimeout for update that pops and update to the end of the
+  // In VolumeBar beforeCreate we have a setTimeout for update that pops and update to the end of the
   // execution stack. The player is destroyed before then update will cause an error
   if (!this.el_) return;
 
@@ -2250,7 +2250,7 @@ vjs.Menu.prototype.createEl = function(){
  */
 vjs.MenuItem = vjs.Button.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Button.call(this, player, options);
     this.selected(options['selected']);
   }
@@ -2292,7 +2292,7 @@ vjs.MenuItem.prototype.selected = function(selected){
  */
 vjs.MenuButton = vjs.Button.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Button.call(this, player, options);
 
     this.menu = this.createMenu();
@@ -2360,7 +2360,7 @@ vjs.MenuButton.prototype.onFocus = function(){};
 vjs.MenuButton.prototype.onBlur = function(){};
 
 vjs.MenuButton.prototype.onClick = function(){
-  // When you click the button it adds focus, which will show the menu indefinitely.
+  // When you click the button it adds focus, which will show the menu indefbeforeCreateely.
   // So we'll remove focus when the mouse leaves the button.
   // Focus is needed for tab navigation.
   this.one('mouseout', vjs.bind(this, function(){
@@ -2416,7 +2416,7 @@ vjs.MenuButton.prototype.unpressButton = function(){
  */
 vjs.Player = vjs.Component.extend({
   /** @constructor */
-  init: function(tag, options, ready){
+  beforeCreate: function(tag, options, ready){
     this.tag = tag; // Store the original tag used to set options
 
     // Set Options
@@ -2438,12 +2438,12 @@ vjs.Player = vjs.Component.extend({
     // May be turned back on by HTML5 tech if nativeControlsForTouch is true
     tag.controls = false;
 
-    // Run base component initializing with new options.
+    // Run base component beforeCreateializing with new options.
     // Builds the element through createEl()
-    // Inits and embeds any child components in opts
+    // beforeCreates and embeds any child components in opts
     vjs.Component.call(this, this, options, ready);
 
-    // Update controls className. Can't do this when the controls are initially
+    // Update controls className. Can't do this when the controls are beforeCreateially
     // set because the element doesn't exist yet.
     if (this.controls()) {
       this.addClass('vjs-controls-enabled');
@@ -2627,7 +2627,7 @@ vjs.Player.prototype.loadTech = function(techName, source){
   if (this.tech) {
     this.unloadTech();
 
-  // If the first time loading, HTML5 tag will exist but won't be initialized
+  // If the first time loading, HTML5 tag will exist but won't be beforeCreateialized
   // So we need to remove it if we're not loading HTML5
   } else if (techName !== 'Html5' && this.tag) {
     this.el_.removeChild(this.tag);
@@ -2665,7 +2665,7 @@ vjs.Player.prototype.loadTech = function(techName, source){
     this.cache_.src = source.src;
   }
 
-  // Initialize tech instance
+  // beforeCreateialize tech instance
   this.tech = new window['videojs'][techName](this, techOptions);
 
   this.tech.ready(techReady);
@@ -2911,7 +2911,7 @@ vjs.Player.prototype.pause = function(){
 };
 
 // http://dev.w3.org/html5/spec/video.html#dom-media-paused
-// The initial state of paused should be true (in Safari it's actually false)
+// The beforeCreateial state of paused should be true (in Safari it's actually false)
 vjs.Player.prototype.paused = function(){
   return (this.techGet('paused') === false) ? false : true;
 };
@@ -3321,7 +3321,7 @@ vjs.Player.prototype.error = function(){ return this.techGet('error'); };
 vjs.Player.prototype.ended = function(){ return this.techGet('ended'); };
 vjs.Player.prototype.seeking = function(){ return this.techGet('seeking'); };
 
-// When the player is first initialized, trigger activity so components
+// When the player is first beforeCreateialized, trigger activity so components
 // like the control bar show themselves if needed
 vjs.Player.prototype.userActivity_ = true;
 vjs.Player.prototype.reportUserActivity = function(event){
@@ -3451,7 +3451,7 @@ vjs.Player.prototype.listenForUserActivity = function(){
 // networkState: function(){ return this.techCall('networkState'); },
 // readyState: function(){ return this.techCall('readyState'); },
 // seeking: function(){ return this.techCall('seeking'); },
-// initialTime: function(){ return this.techCall('initialTime'); },
+// beforeCreateialTime: function(){ return this.techCall('beforeCreateialTime'); },
 // startOffsetTime: function(){ return this.techCall('startOffsetTime'); },
 // played: function(){ return this.techCall('played'); },
 // seekable: function(){ return this.techCall('seekable'); },
@@ -3553,7 +3553,7 @@ vjs.ControlBar.prototype.createEl = function(){
  */
 vjs.PlayToggle = vjs.Button.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Button.call(this, player, options);
 
     player.on('play', vjs.bind(this, this.onPlay));
@@ -3596,7 +3596,7 @@ vjs.PlayToggle.prototype.onPause = function(){
  */
 vjs.CurrentTimeDisplay = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
 
     player.on('timeupdate', vjs.bind(this, this.updateContent));
@@ -3632,7 +3632,7 @@ vjs.CurrentTimeDisplay.prototype.updateContent = function(){
  */
 vjs.DurationDisplay = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
 
     player.on('timeupdate', vjs.bind(this, this.updateContent)); // this might need to be changes to 'durationchange' instead of 'timeupdate' eventually, however the durationchange event fires before this.player_.duration() is set, so the value cannot be written out using this method. Once the order of durationchange and this.player_.duration() being set is figured out, this can be updated.
@@ -3669,7 +3669,7 @@ vjs.DurationDisplay.prototype.updateContent = function(){
  */
 vjs.TimeDivider = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
   }
 });
@@ -3689,7 +3689,7 @@ vjs.TimeDivider.prototype.createEl = function(){
  */
 vjs.RemainingTimeDisplay = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
 
     player.on('timeupdate', vjs.bind(this, this.updateContent));
@@ -3728,7 +3728,7 @@ vjs.RemainingTimeDisplay.prototype.updateContent = function(){
  */
 vjs.FullscreenToggle = vjs.Button.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Button.call(this, player, options);
   }
 });
@@ -3755,7 +3755,7 @@ vjs.FullscreenToggle.prototype.onClick = function(){
  */
 vjs.ProgressControl = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
   }
 });
@@ -3780,7 +3780,7 @@ vjs.ProgressControl.prototype.createEl = function(){
  */
 vjs.SeekBar = vjs.Slider.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Slider.call(this, player, options);
     player.on('timeupdate', vjs.bind(this, this.updateARIAAttributes));
     player.ready(vjs.bind(this, this.updateARIAAttributes));
@@ -3880,7 +3880,7 @@ vjs.SeekBar.prototype.stepBack = function(){
  */
 vjs.LoadProgressBar = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
     player.on('progress', vjs.bind(this, this.update));
   }
@@ -3906,7 +3906,7 @@ vjs.LoadProgressBar.prototype.update = function(){
  */
 vjs.PlayProgressBar = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
   }
 });
@@ -3943,7 +3943,7 @@ vjs.SeekHandle.prototype.createEl = function(){
  */
 vjs.VolumeControl = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
 
     // hide volume controls when they're not supported by the current tech
@@ -3980,7 +3980,7 @@ vjs.VolumeControl.prototype.createEl = function(){
  */
 vjs.VolumeBar = vjs.Slider.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Slider.call(this, player, options);
     player.on('volumechange', vjs.bind(this, this.updateARIAAttributes));
     player.ready(vjs.bind(this, this.updateARIAAttributes));
@@ -4040,7 +4040,7 @@ vjs.VolumeBar.prototype.stepBack = function(){
  */
 vjs.VolumeLevel = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
   }
 });
@@ -4077,7 +4077,7 @@ vjs.VolumeLevel.prototype.createEl = function(){
  */
 vjs.MuteToggle = vjs.Button.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Button.call(this, player, options);
 
     player.on('volumechange', vjs.bind(this, this.update));
@@ -4144,7 +4144,7 @@ vjs.MuteToggle.prototype.update = function(){
  */
 vjs.VolumeMenuButton = vjs.MenuButton.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.MenuButton.call(this, player, options);
 
     // Same listeners as MuteToggle
@@ -4196,7 +4196,7 @@ vjs.VolumeMenuButton.prototype.update = vjs.MuteToggle.prototype.update;
  */
 vjs.PosterImage = vjs.Button.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Button.call(this, player, options);
 
     if (!player.poster() || !player.controls()) {
@@ -4243,7 +4243,7 @@ vjs.PosterImage.prototype.onClick = function(){
  */
 vjs.LoadingSpinner = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
 
     player.on('canplay', vjs.bind(this, this.hide));
@@ -4276,7 +4276,7 @@ vjs.LoadingSpinner.prototype.createEl = function(){
 /* Big Play Button
 ================================================================================ */
 /**
- * Initial play button. Shows before the video has played. The hiding of the
+ * beforeCreateial play button. Shows before the video has played. The hiding of the
  * big play button is done via CSS and player states.
  * @param {vjs.Player|Object} player
  * @param {Object=} options
@@ -4308,10 +4308,10 @@ vjs.BigPlayButton.prototype.onClick = function(){
  */
 vjs.MediaTechController = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     vjs.Component.call(this, player, options, ready);
 
-    this.initControlsListeners();
+    this.beforeCreateControlsListeners();
   }
 });
 
@@ -4335,7 +4335,7 @@ vjs.MediaTechController = vjs.Component.extend({
  * keep the controls showing, but that shouldn't be an issue. A touch and hold on
  * any controls will still keep the user active
  */
-vjs.MediaTechController.prototype.initControlsListeners = function(){
+vjs.MediaTechController.prototype.beforeCreateControlsListeners = function(){
   var player, tech, activateControls, deactivateControls;
 
   tech = this;
@@ -4468,7 +4468,7 @@ vjs.media = {};
  * List of default API methods for any MediaTechController
  * @type {String}
  */
-vjs.media.ApiMethods = 'play,pause,paused,currentTime,setCurrentTime,duration,buffered,volume,setVolume,muted,setMuted,width,height,supportsFullScreen,enterFullScreen,src,load,currentSrc,preload,setPreload,autoplay,setAutoplay,loop,setLoop,error,networkState,readyState,seeking,initialTime,startOffsetTime,played,seekable,ended,videoTracks,audioTracks,videoWidth,videoHeight,textTracks,defaultPlaybackRate,playbackRate,mediaGroup,controller,controls,defaultMuted'.split(',');
+vjs.media.ApiMethods = 'play,pause,paused,currentTime,setCurrentTime,duration,buffered,volume,setVolume,muted,setMuted,width,height,supportsFullScreen,enterFullScreen,src,load,currentSrc,preload,setPreload,autoplay,setAutoplay,loop,setLoop,error,networkState,readyState,seeking,beforeCreateialTime,startOffsetTime,played,seekable,ended,videoTracks,audioTracks,videoWidth,videoHeight,textTracks,defaultPlaybackRate,playbackRate,mediaGroup,controller,controls,defaultMuted'.split(',');
 // Create placeholder methods for each that warn when a method isn't supported by the current playback technology
 
 function createMethod(methodName){
@@ -4494,7 +4494,7 @@ for (var i = vjs.media.ApiMethods.length - 1; i >= 0; i--) {
  */
 vjs.Html5 = vjs.MediaTechController.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     // volume cannot be changed from 1 on iOS
     this.features['volumeControl'] = vjs.Html5.canControlVolume();
 
@@ -4765,7 +4765,7 @@ if (vjs.IS_OLD_ANDROID) {
  */
 vjs.Flash = vjs.MediaTechController.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     vjs.MediaTechController.call(this, player, options, ready);
 
     var source = options['source'],
@@ -4784,7 +4784,7 @@ vjs.Flash = vjs.MediaTechController.extend({
         // e.g. player.autoplay();
         playerOptions = player.options_,
 
-        // Merge default flashvars with ones passed in to init
+        // Merge default flashvars with ones passed in to beforeCreate
         flashVars = vjs.obj.merge({
 
           // SWF Callback Functions
@@ -4903,7 +4903,7 @@ vjs.Flash = vjs.MediaTechController.extend({
         // The one working method I found was to use the iframe's document.write() to create the swf object
         // This got around the security issue in all browsers except firefox.
         // I did find a hack where if I call the iframe's window.location.href='', it would get around the security error
-        // However, the main page would look like it was loading indefinitely (URL bar loading spinner would never stop)
+        // However, the main page would look like it was loading indefbeforeCreateely (URL bar loading spinner would never stop)
         // Plus Firefox 3.6 didn't work no matter what I tried.
         // if (vjs.USER_AGENT.match('Firefox')) {
         //   iWin.location.href = '';
@@ -5040,7 +5040,7 @@ vjs.Flash.prototype.enterFullScreen = function(){
 // Create setters and getters for attributes
 var api = vjs.Flash.prototype,
     readWrite = 'rtmpConnection,rtmpStream,preload,currentTime,defaultPlaybackRate,playbackRate,autoplay,loop,mediaGroup,controller,controls,volume,muted,defaultMuted'.split(','),
-    readOnly = 'error,currentSrc,networkState,readyState,seeking,initialTime,duration,startOffsetTime,paused,played,seekable,ended,videoTracks,audioTracks,videoWidth,videoHeight,textTracks'.split(',');
+    readOnly = 'error,currentSrc,networkState,readyState,seeking,beforeCreateialTime,duration,startOffsetTime,paused,played,seekable,ended,videoTracks,audioTracks,videoWidth,videoHeight,textTracks'.split(',');
     // Overridden: buffered
 
 /**
@@ -5176,7 +5176,7 @@ vjs.Flash.embed = function(swf, placeHolder, flashVars, params, attributes){
 
   placeHolder.parentNode.replaceChild(obj, placeHolder);
 
-  // IE6 seems to have an issue where it won't initialize the swf object after injecting it.
+  // IE6 seems to have an issue where it won't beforeCreateialize the swf object after injecting it.
   // This is a dumb fix
   var newObj = par.childNodes[0];
   setTimeout(function(){
@@ -5284,10 +5284,10 @@ vjs.Flash.isStreamingSrc = function(src) {
  */
 vjs.MediaLoader = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     vjs.Component.call(this, player, options, ready);
 
-    // If there are no sources when the player is initialized,
+    // If there are no sources when the player is beforeCreateialized,
     // load the first supported playback technology.
     if (!player.options_['sources'] || player.options_['sources'].length === 0) {
       for (var i=0,j=player.options_['techOrder']; i<j.length; i++) {
@@ -5430,7 +5430,7 @@ vjs.Player.prototype.showTextTrack = function(id, disableSameKind){
  */
 vjs.TextTrack = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.Component.call(this, player, options);
 
     // Apply track info to track object
@@ -6007,10 +6007,10 @@ vjs.ChaptersTrack.prototype.kind_ = 'chapters';
  */
 vjs.TextTrackDisplay = vjs.Component.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     vjs.Component.call(this, player, options, ready);
 
-    // This used to be called during player init, but was causing an error
+    // This used to be called during player beforeCreate, but was causing an error
     // if a track should show by default and the display hadn't loaded yet.
     // Should probably be moved to an external track loader when we support
     // tracks that don't need a display.
@@ -6034,10 +6034,10 @@ vjs.TextTrackDisplay.prototype.createEl = function(){
  */
 vjs.TextTrackMenuItem = vjs.MenuItem.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     var track = this.track = options['track'];
 
-    // Modify options for parent MenuItem class's init.
+    // Modify options for parent MenuItem class's beforeCreate.
     options['label'] = track.label();
     options['selected'] = track.dflt();
     vjs.MenuItem.call(this, player, options);
@@ -6060,7 +6060,7 @@ vjs.TextTrackMenuItem.prototype.update = function(){
  */
 vjs.OffTextTrackMenuItem = vjs.TextTrackMenuItem.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     // Create pseudo track info
     // Requires options['kind']
     options['track'] = {
@@ -6102,7 +6102,7 @@ vjs.OffTextTrackMenuItem.prototype.update = function(){
  */
 vjs.TextTrackButton = vjs.MenuButton.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     vjs.MenuButton.call(this, player, options);
 
     if (this.items.length <= 1) {
@@ -6160,7 +6160,7 @@ vjs.TextTrackButton.prototype.createItems = function(){
  */
 vjs.CaptionsButton = vjs.TextTrackButton.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     vjs.TextTrackButton.call(this, player, options, ready);
     this.el_.setAttribute('aria-label','Captions Menu');
   }
@@ -6174,7 +6174,7 @@ vjs.CaptionsButton.prototype.className = 'vjs-captions-button';
  */
 vjs.SubtitlesButton = vjs.TextTrackButton.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     vjs.TextTrackButton.call(this, player, options, ready);
     this.el_.setAttribute('aria-label','Subtitles Menu');
   }
@@ -6190,7 +6190,7 @@ vjs.SubtitlesButton.prototype.className = 'vjs-subtitles-button';
  */
 vjs.ChaptersButton = vjs.TextTrackButton.extend({
   /** @constructor */
-  init: function(player, options, ready){
+  beforeCreate: function(player, options, ready){
     vjs.TextTrackButton.call(this, player, options, ready);
     this.el_.setAttribute('aria-label','Chapters Menu');
   }
@@ -6276,12 +6276,12 @@ vjs.ChaptersButton.prototype.createMenu = function(){
  */
 vjs.ChaptersTrackMenuItem = vjs.MenuItem.extend({
   /** @constructor */
-  init: function(player, options){
+  beforeCreate: function(player, options){
     var track = this.track = options['track'],
         cue = this.cue = options['cue'],
         currentTime = player.currentTime();
 
-    // Modify options for parent MenuItem class's init.
+    // Modify options for parent MenuItem class's beforeCreate.
     options['label'] = cue.text;
     options['selected'] = (cue.startTime <= currentTime && currentTime < cue.endTime);
     vjs.MenuItem.call(this, player, options);
@@ -6313,7 +6313,7 @@ vjs.obj.merge(vjs.ControlBar.prototype.options_['children'], {
 
 // vjs.Cue = vjs.Component.extend({
 //   /** @constructor */
-//   init: function(player, options){
+//   beforeCreate: function(player, options){
 //     vjs.Component.call(this, player, options);
 //   }
 // });
@@ -6452,6 +6452,6 @@ if (document.readyState === 'complete') {
 // Run Auto-load players
 // You have to wait at least once in case this script is loaded after your video in the DOM (weird behavior only with minified version)
 vjs.autoSetupTimeout(1);
-vjs.plugin = function(name, init){
-  vjs.Player.prototype[name] = init;
+vjs.plugin = function(name, beforeCreate){
+  vjs.Player.prototype[name] = beforeCreate;
 };

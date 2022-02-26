@@ -7,7 +7,7 @@
                     <b-card-header>
                         <header class="0w-100">
                             <div class="ml-3">
-                                <router-link id="postTitle" :to="{ name: 'Post', params: { id: post._id, post: post }}"><h6>{{ post.title }}</h6></router-link>
+                                <router-link id="postTitle" :to="{ name: 'Post', params: { id: post._id, post: post }}" ><h6>{{ post.title }}</h6></router-link>
                                 <div class="text-muted small mb-1">{{ post.department }} / {{ post.username }}</div>
                             </div>
                         </header>
@@ -59,9 +59,6 @@ export default {
 
     .card-header:first-child {
         border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0
-    }
-    .post-body {
-      border-bottom: solid 0.05px grey;
     }
 
     .card-header {

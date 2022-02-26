@@ -74,7 +74,7 @@ export default {
           if (this.file !== false) {
             await this.$store.dispatch('createPost',
               {
-                userId: this.$store.state.user._id,
+                userId: this.$store.state.user.userId,
                 username: this.$store.state.user.username,
                 title: this.title,
                 department: this.department,
