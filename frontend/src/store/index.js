@@ -116,8 +116,12 @@ export default new Vuex.Store({
       localStorage.removeItem('authToken')
       localStorage.removeItem('user')
     },
-    Edit_Post: (state, posts) => {
-      return state.posts.unshift(posts)
+    Edit_Post: (state, editedPost) => {
+      const postFiles = posts.findIndex(
+        post => post.id === editedPost.id
+      )
+      state.posts[postFiles] = editedPost
+      state.posts.unshift(posts)
     },
     Delete_Post: (state, posts) => {
       state.posts.pop(posts._id)
@@ -261,25 +265,40 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-    async editPost ({ commit }, data){
-      
-      try {
-        const editForm = new FormData()
-        editForm.append('content', data.content)
-        editForm.append('file', data.file)
+    async editPost ({ commit }, {postId, newFile, content}){
+      try{
+        const formData = !!newFile
 
-        //edit post information
-        const response = await axios.put('http://localhost:3000/api/posts/', editForm,
-        {
-          headers: { 'Content-Type': 'multipart/form-data',
-          Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
-          }
-        })
-        commit('Edit_Post', response.data)
+        if (formData) {
+          const editData = new FormData()
+          editData.append('file', newFile)
+          editData.append('content', content)
+        }
 
-      }catch (error) {
-        console.error(error);
+        const response = await axios.put('http://localhost:3000/api/posts/' + postId, body, { FormData })
+        commit('Edit_Post', response.post)
+      } catch (error) {
+        console.error(error)
       }
+      
+      
+      // try {
+      //   const editForm = new FormData()
+      //   editForm.append('content', data.content)
+      //   editForm.append('file', data.file)
+
+      //   //edit post information
+      //   const response = await axios.put('http://localhost:3000/api/posts/', editForm,
+      //   {
+      //     headers: { 'Content-Type': 'multipart/form-data',
+      //     Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+      //     }
+      //   })
+      //   commit('Edit_Post', response.data)
+
+      // }catch (error) {
+      //   console.error(error);
+      // }
       
     },
     async deletePost ({ commit }) {

@@ -1,7 +1,7 @@
 <template>
 <div class="card post" id="viewPost" img-top>
     <router-link :to="'/main'">Back To Home</router-link>
-    <b-button id="editBtn" v-b-modal.editForm>
+    <b-button id="editBtn" @click="$bvModal.show('editForm')">
         <i class="fa fa-edit"></i>
     </b-button>
     <header>
@@ -10,8 +10,10 @@
     </header>
     <b-modal id="editForm" title="Edit Post" ok-title="Submit Changes" @ok="saveEdit">
         <b-form>
-            <b-file v-if="post.file" @file-update='onNewImage' id="file-input" class="form-control-file"></b-file>
-            <input type="text" class="form-control" v-modal="content" />
+            <div>
+                <upload-btn class="form-control-file" type="file" id="newFile" name="image" placeholder="Select a file..." form="editForm" plain @click="chooseFile" @file-update="getFile"></upload-btn>
+            </div>
+            <input id="newText" type="text" class="form-control" v-model="content" disabled/>
         </b-form>
     </b-modal>
     <b-card-text id="currentContent" v-if="post.content">{{ post.content }}</b-card-text>
@@ -23,14 +25,14 @@
 
 <script>
 // import EditForm from "../components/EditPost.vue"
-import { mapGetters, mapActions } from 'vuex'
-import Post from '../components/Post'
+import { mapGetters } from 'vuex'
+import UploadButton from 'vuetify-upload-button'
 
 export default {
     name: "Post",
     props: ['post', 'user'],
     components: {
-        Post
+        'upload-btn': UploadButton
     },
     data () {
         return {
@@ -39,17 +41,14 @@ export default {
             uploadedImage: false,
             title: '',
             department: '',
-            content: '',
-            file: ''
+            content: this.post.content,
+            newFile: null
         }
     },
     computed: {
         ...mapGetters([
             'getUser'
-        ]),
-        ...mapActions([
-            'editPost'
-        ]) 
+        ])
     },
     // mounted () {
     //     const posts = localStorage.getItem('posts')
@@ -78,8 +77,8 @@ export default {
         chooseFile () {
             this.$refs.file.click()
         },
-        onNewImage (file) {
-            this.onNewImage = file
+        getFile (file) {
+            this.newFile = file
         },
         async removePost () {
             this.$swal({
@@ -102,52 +101,64 @@ export default {
         },
         async saveEdit () {
             try {
-                const post = localStorage.getItem('posts')
-                if (this.post.file) {
-                if (this.post.file !== false) {
-                   
-                    await this.$store.dispatch('editPost',
-                    {
-                        file: this.file,
-                    },
-                    {
-                        headers: {
-                        'Content-Type': 'multipart/form-data',
-                        authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
-                        }
-                    }).then(
-                    () => {
-                        console.log('Post and file updated successfully')
-                    }
-                    )
-                    //this.$store.dispatch('loadAllPosts')
-                    this.file = false
-                    this.content = ''
-                } else {
-                    this.file = false
-                    this.content = ''
-                    console.log('invalid')
-                }
-                } else if (this.content) {
-                await this.$store.dispatch('editPost',
-                {
-                    content: this.content
-                }).then(
-                    () => {
-                    console.log('Post edited successfully')
-                    }
-                )
-                //this.$store.dispatch('loadAllPosts')
-                this.content = ''
-                } else {
-                console.log('not posted')
-                this.content = ''
-                }
+                await this.$store.dispatch('editPost', {
+                    postId: this.post._id,
+                    newFile: this.newFile,
+                    content: ''
+                })
+                console.log('posted successfully')
             } catch (error) {
-                this.file = null
-                this.content = ''
                 console.log(error)
-                }
+                console.log('not posted')
+            }
+            // try {
+            //     // const post = localStorage.getItem('posts')
+            //     if (this.file) {
+            //     if (this.file !== false) {
+                   
+            //         await this.editPost(
+            //         {
+            //             file: this.file,
+            //         },
+            //         {
+            //             headers: {
+            //             'Content-Type': 'multipart/form-data',
+            //             authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+            //             }
+            //         }).then(
+            //         () => {
+            //             console.log('Post and file updated successfully')
+            //         }
+            //         )
+            //         //this.$store.dispatch('loadAllPosts')
+            //         this.file = false
+            //         this.content = ''
+            //     } else {
+            //         this.file = false
+            //         this.content = ''
+            //         console.log('invalid')
+            //     }
+            //     } else if (this.content) {
+            //         document.querySelector('#newText').setAttribute('disabled', false)
+            //     await this.editPost(
+            //     {
+            //         content: document.querySelector('#newText').innerHTML
+            //     }).then(
+            //         () => {
+            //         console.log('Post edited successfully')
+            //         }
+            //     )
+            //     //this.$store.dispatch('loadAllPosts')
+            //     this.content = ''
+            //     } else {
+            //     console.log('not posted')
+            //     this.content = ''
+            //     }
+            // } catch (error) {
+            //     this.file = null
+            //     this.content = ''
+            //     console.log(error)
+            //     }
             }
         
     }
