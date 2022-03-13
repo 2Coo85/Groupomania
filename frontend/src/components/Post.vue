@@ -30,7 +30,7 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   
-  props: ['post'],
+  props: ['post', 'id'],
   data () {
     return {
       title: '',

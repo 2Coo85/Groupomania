@@ -84,7 +84,7 @@ export default {
     ...mapGetters([
       'getAllPosts',
       'getPostsByDept',
-      'getUserName'
+      'getUser'
     ]),
     loadAllPosts () {
       return this.getAllPosts
@@ -93,7 +93,7 @@ export default {
       'posts'
     ]),
     user () {
-      return this.getUserName
+      return this.getUser
     }
   },
   mounted () {

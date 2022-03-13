@@ -15,7 +15,6 @@ export default new Vuex.Store({
       'Management'
     ],
     posts: [],
-    savedPosts: [],
     oneUser: [],
     readPosts: [],
     authToken: localStorage.getItem('authToken') || null,
@@ -26,9 +25,6 @@ export default new Vuex.Store({
   getters: {
     getUser: (state) => {
       return state.user.username
-    },
-    getUserId: (state) => {
-      return state.user.userId
     },
     getUserDepartment: state => {
       return state.user.department
@@ -73,11 +69,10 @@ export default new Vuex.Store({
     Set_Users: (state, user) => {
       state.user = user;
     },
-    Delete_User: (state) => {
+    Delete_User: (state, userId) => {
       state.authToken = null
+      state.user.splice(userId, 1)
       state.user = ''
-      localStorage.removeItem('authToken')
-      localStorage.removeItem('user')
     },
     One_User: (state, oneUser) => {
       state.oneUser = oneUser
@@ -95,19 +90,16 @@ export default new Vuex.Store({
         })
       }
     },
-    setSavedPosts: (state, savedPosts) => {
-      state.savedPosts.push(savedPosts)
-    },
     Create_Post: (state, posts) => {
       return state.posts.unshift(posts)
     },
     All_Posts: (state, posts) => {
       state.posts = posts
     },
-    View_Post: (state, currentPost) => {
-      const index = state.posts.findIndex((post) => post.id === currentPost.id)
+    Find_Post: (state, currentPost) => {
+      const index = state.posts.findIndex((post) => post._id === currentPost._id);
       if (index !== -1) {
-        state.posts.splice(index, 1, currentPost)
+        state.posts.splice(index, 1)
       }
     },
     logout (state) {
@@ -117,14 +109,15 @@ export default new Vuex.Store({
       localStorage.removeItem('user')
     },
     Edit_Post: (state, editedPost) => {
-      const postFiles = posts.findIndex(
-        post => post.id === editedPost.id
+      const postIndex = state.posts.findIndex(
+        () => state.posts._id === editedPost._id
       )
-      state.posts[postFiles] = editedPost
-      state.posts.unshift(posts)
+      state.posts[postIndex] = editedPost
+      state.posts = [...state.posts]
     },
     Delete_Post: (state, posts) => {
-      state.posts.pop(posts._id)
+        state.posts = state.posts.splice(posts._id, 1)
+        return state.posts
     }
   },
   actions: {
@@ -139,17 +132,40 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-    async deleteUser ({ commit }) {
+    async deleteUser (data) {
+      // const id = this.getters.getUser
       try {
-        await axios.delete(
-          'http://localhost:3000/api/auth/users/' + this.getters.getUserId,
-          {
-            headers: {
-              authorization: 'Bearer ' + localStorage.getItem('authToken')
-            }
+        const token = this.getters.getAuthToken
+        const response = await axios.delete('http://localhost:3000/api/auth', {
+          username: data.username,
+          department: data.email,
+          phone: data.phone,
+          email: data.email,
+          password: data.password
+        },
+        {
+          headers: {
+            authorization: 'Bearer ' + token
           }
-        )
-        commit('Delete_User')
+        })
+        console.log(response)
+        const user = await response.data
+        const authToken = await response.data
+        localStorage.removeItem(user)
+        localStorage.removeItem(authToken)
+        // await axios.delete(
+        //   'http://localhost:3000/api/auth/',
+        //   {
+        //     data: id
+        //   },
+        //   {
+        //     headers: {
+        //       authorization: 'Bearer ' + localStorage.getItem('authToken')
+        //     }
+        //   }
+          
+        // )
+        // commit('Delete_User')
       } catch (error) {
         console.log(error)
       }
@@ -181,7 +197,6 @@ export default new Vuex.Store({
     },
     async createPost ({ commit }, data) {
       const postForm = new FormData()
-      postForm.append('userId', data.userId)
       postForm.append('username', data.username)
       postForm.append('title', data.title)
       postForm.append('department', data.department)
@@ -198,7 +213,7 @@ export default new Vuex.Store({
           })
         commit('Create_Post', response.data)
       } catch (error) {
-        console.log(error)
+        console.log(error.message)
       }
     },
     async getUser ({ commit }) {
@@ -265,21 +280,40 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
-    async editPost ({ commit }, {postId, newFile, content}){
-      try{
-        const formData = !!newFile
-
-        if (formData) {
-          const editData = new FormData()
-          editData.append('file', newFile)
-          editData.append('content', content)
-        }
-
-        const response = await axios.put('http://localhost:3000/api/posts/' + postId, body, { FormData })
-        commit('Edit_Post', response.post)
-      } catch (error) {
-        console.error(error)
+    async editPost ({ commit }, { postId, file, content }){
+      let body = {
+        content: content
       }
+
+      const isFormData = !!file
+
+      if (isFormData) {
+        const editForm = new FormData()
+        editForm.append('file', file)
+        editForm.append('post', JSON.stringify(body))
+        body = editForm
+      }
+
+      await axios.put('http://localhost:3000/api/posts/' + postId, body, { isFormData }).then(
+        (response) => {
+          commit('All_Posts', response.post)
+        }
+      )
+      // try{
+      //   const response = await axios.patch(`http://localhost:3000/api/posts/${data}`,
+      //   {
+      //     headers: {
+      //       Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
+      //     }
+      //   })
+      //   const content = await response.data.content
+      //   const file = await response.data.file
+      //   console.log(data, response.data)
+      //   commit('Edit_Post', data, content, file)
+      //   console.log(content, file)
+      // } catch (error) {
+      //   console.error(error.message, error)
+      // }
       
       
       // try {
@@ -301,19 +335,24 @@ export default new Vuex.Store({
       // }
       
     },
-    async deletePost ({ commit }) {
+    async deletePost ({commit}, data) {
       try {
-        await axios.delete(
-          `http://localhost:3000/api/auth/posts/${post._id}`,
+        const token = await this.getters.getAuthToken
+        const response = await axios.delete(
+          `http://localhost:3000/api/posts/${data}`,
           {
             headers: {
-              authorization: 'Bearer ' + localStorage.getItem('authToken')
+              authorization: 'Bearer ' + token
             }
           }
         )
-        commit('Delete_Post')
+          console.log('checking...')
+          console.log(data) 
+          commit('Find_Post', response.data)
+        
+
       } catch (error) {
-        console.log(error)
+        console.log(error.message, data)
       }
     }
   },

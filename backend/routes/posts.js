@@ -6,11 +6,10 @@ const multer = require('../middleware/multer-config');
 
 const postSchema = require('../controllers/posts')
 
-router.get('/', auth, postSchema.getAllPosts);
 router.post('/', auth, multer, postSchema.createPost);
+router.get('/', auth, postSchema.getAllPosts);
+router.delete('/:_id', auth, postSchema.deletePost);
+router.put('/:_id', auth, multer, postSchema.updatePost);
 router.get('/:id', auth, postSchema.getOnePost);
-router.put('/:id', auth, multer, postSchema.updatePost);
-
-
 
 module.exports = router;

@@ -17,7 +17,7 @@
                     <b-dropdown-item href="/management">Management</b-dropdown-item>
                 </b-dropdown>
                 <b-dropdown text="User" right class="mr-3">
-                    <b-dropdown-item href="/settings">Account</b-dropdown-item>
+                    <b-dropdown-item> <router-link :to="{ name: 'Settings', params: { id: user.userId, user: user } }">Account</router-link></b-dropdown-item>
                     <b-dropdown-item @click="logOut">Log Out</b-dropdown-item>
                 </b-dropdown>
             </b-collapse>
@@ -26,13 +26,21 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
+  prop: ['user'],
+
   data () {
     return {
       posts: [],
       department: []
     }
+  },
+  computed: {
+    ...mapState([
+      'user'
+    ])
   },
   methods: {
     logOut () {

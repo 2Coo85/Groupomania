@@ -36,6 +36,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import axios from 'axios'
 
 export default {
   computed: {
@@ -45,6 +46,11 @@ export default {
       'getUserEmail',
       'getUserPhone'
     ])
+  },
+  data () {
+      return {
+          userInfo: JSON.parse(localStorage.getItem('user'))
+      }
   },
   methods: {
     deleteAccount () {
@@ -57,9 +63,12 @@ export default {
       }).then(
         (result) => {
           if (result.value) {
+              axios.delete(`http://localhost:3000/api/auth/user/:${this.userInfo.userId}`)
+              localStorage.clear()
+              this.$router.replace('/')
             this.$swal('DELETED', 'You have successfully deleted your account', 'success')
-            this.$store.dispatch('deleteUser')
-            this.$router.push('/')
+            // this.$store.dispatch('deleteUser')
+            // this.$router.push('/')
           } else {
             this.$swal('CANCELLED', 'Your account is still active', 'info')
           }

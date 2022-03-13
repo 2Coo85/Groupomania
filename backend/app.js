@@ -3,11 +3,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
+const cors = require('cors')
 
 const postRoutes = require('./routes/posts');
 const userRoutes = require('./routes/user');
 
 const app = express();
+app.use(cors())
+app.options('*', cors())
 mongoose.set('useCreateIndex', true)
 
 mongoose.connect(  'mongodb+srv://tc3085:S6vK5mmykEizcnP7@cluster0.zuqab.mongodb.net/start?retryWrites=true&w=majority',
@@ -19,7 +22,7 @@ mongoose.connect(  'mongodb+srv://tc3085:S6vK5mmykEizcnP7@cluster0.zuqab.mongodb
       console.log('Unable to connect to MongoDB Atlas!');
       console.error(error);
     });
-  
+
 app.use((req, res, next) => {
    res.setHeader('Access-Control-Allow-Origin', '*');
    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');

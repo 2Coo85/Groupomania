@@ -1,5 +1,5 @@
 <template>
-<div class="card post" id="viewPost" img-top>
+<div class="card post" id="currentPost" img-top>
     <router-link :to="'/main'">Back To Home</router-link>
     <b-button id="editBtn" @click="$bvModal.show('editForm')">
         <i class="fa fa-edit"></i>
@@ -11,13 +11,14 @@
     <b-modal id="editForm" title="Edit Post" ok-title="Submit Changes" @ok="saveEdit">
         <b-form>
             <div>
-                <upload-btn class="form-control-file" type="file" id="newFile" name="image" placeholder="Select a file..." form="editForm" plain @click="chooseFile" @file-update="getFile"></upload-btn>
+                <upload-btn class="form-control-file" type="file" id="file" name="image" form="editForm" plain @click="chooseFile" @file-update="getFile"></upload-btn>
             </div>
-            <input id="newText" type="text" class="form-control" v-model="content" disabled/>
+            <input id="newText" type="text" class="form-control" v-model.lazy="content"/>
         </b-form>
     </b-modal>
     <b-card-text id="currentContent" v-if="post.content">{{ post.content }}</b-card-text>
     <b-card id="currentImg" class="image" v-else :img-src="post.file" img-alt="media" img-top></b-card>
+    <b-button id="deletePost" class="btn btn-default" @click="removePost(id)">Delete Post</b-button>
     <!-- <b-file v-if="post.file" @file-update='onNewImage' id="file-input" class="form-control-file" disabled></b-file> -->
     <!-- <b-button @click="saveEdit()" id='confirm-edit'>Confirm Changes</b-button> -->
 </div>
@@ -30,19 +31,20 @@ import UploadButton from 'vuetify-upload-button'
 
 export default {
     name: "Post",
-    props: ['post', 'user'],
+    props: ['post'],
     components: {
         'upload-btn': UploadButton
     },
     data () {
         return {
-            userId: "",
             postSaved: 'not saved',
             uploadedImage: false,
-            title: '',
-            department: '',
+            title: this.post.title,
+            department: this.post.department,
             content: this.post.content,
-            newFile: null
+            file: this.post.file,
+            postUrl:null,
+            id: ''
         }
     },
     computed: {
@@ -51,21 +53,12 @@ export default {
         ])
     },
     // mounted () {
-    //     const posts = localStorage.getItem('posts')
-    //     const singlePost = Object.values(posts)
-    //     const user = localStorage.getItem('user')
-    //     const currentUser = Object.values(user)
+    //     this.postUrl = this.$route.params.id
         
-    //     if (singlePost.userId != currentUser.userId) {
-    //         document.querySelector('#editBtn').style.display = 'none'
-    //         document.querySelector('#file-input').style.display = 'none'
-    //         document.querySelector('#confirm-edit').style.display = 'none'
-    //     } else {
-    //         document.querySelector('#editBtn').style.display = 'inline-block'
-    //         document.querySelector('#file-input').style.display = 'inline-block'
-    //         document.querySelector('#confirm-edit').style.display = 'inline-block'
-    //     }
     // },
+    created () {
+        this.id = this.$route.params.id
+    },
     methods: {
         isCurrentUser: () => {
             if (post.userId === user.userId) {
@@ -74,25 +67,38 @@ export default {
                 document.querySelector('#editBtn').style.visibility = 'hidden'
             }
         },
+        getcontent () {
+            this.content
+        },
         chooseFile () {
             this.$refs.file.click()
         },
         getFile (file) {
-            this.newFile = file
+            const fr = new FileReader()
+            fr.readAsDataURL(file)
+            fr.addEventListener('load', () => {
+            this.uploadedImage = fr.result
+            this.file = file
+            })
         },
-        async removePost () {
+        removePost () {
+            
             this.$swal({
                 title: 'Do you want to delete your post?',
                 text: 'This action can\'t be reversed',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Delete my post',
                 cancelButtonText: 'Cancel deletion'
             }).then(
                 (result) => {
                 if (result.value) {
-                    this.$swal('DELETED', 'You have successfully deleted your post', 'success')
-                    this.$store.dispatch('deletePost')
-                    this.$router.push('/')
+                    console.log('checking remove post')
+                    console.log(this.id)
+                    this.$store.dispatch('deletePost', this.id)
+                    this.$router.push('/main')
+                    this.$store.dispatch('loadAllPosts')
+                       
                 } else {
                     this.$swal('CANCELLED', 'Your post is still active', 'info')
                 }
@@ -100,66 +106,26 @@ export default {
             )
         },
         async saveEdit () {
-            try {
+            //change the if statement to accomadate accepting a file
+            if(!this.content) {
                 await this.$store.dispatch('editPost', {
                     postId: this.post._id,
-                    newFile: this.newFile,
-                    content: ''
+                    file: this.file
                 })
-                console.log('posted successfully')
-            } catch (error) {
-                console.log(error)
-                console.log('not posted')
+                
+            } else {
+                await this.$store.dispatch('editPost', {
+                    postId: this.post._id,
+                    file: this.file,
+                    content: this.content
+                })
             }
-            // try {
-            //     // const post = localStorage.getItem('posts')
-            //     if (this.file) {
-            //     if (this.file !== false) {
-                   
-            //         await this.editPost(
-            //         {
-            //             file: this.file,
-            //         },
-            //         {
-            //             headers: {
-            //             'Content-Type': 'multipart/form-data',
-            //             authorization: 'Bearer ' + JSON.parse(localStorage.getItem('authToken'))
-            //             }
-            //         }).then(
-            //         () => {
-            //             console.log('Post and file updated successfully')
-            //         }
-            //         )
-            //         //this.$store.dispatch('loadAllPosts')
-            //         this.file = false
-            //         this.content = ''
-            //     } else {
-            //         this.file = false
-            //         this.content = ''
-            //         console.log('invalid')
-            //     }
-            //     } else if (this.content) {
-            //         document.querySelector('#newText').setAttribute('disabled', false)
-            //     await this.editPost(
-            //     {
-            //         content: document.querySelector('#newText').innerHTML
-            //     }).then(
-            //         () => {
-            //         console.log('Post edited successfully')
-            //         }
-            //     )
-            //     //this.$store.dispatch('loadAllPosts')
-            //     this.content = ''
-            //     } else {
-            //     console.log('not posted')
-            //     this.content = ''
-            //     }
-            // } catch (error) {
-            //     this.file = null
-            //     this.content = ''
-            //     console.log(error)
-            //     }
-            }
+            
+            console.log(this.file.name)
+            this.$router.push('/main')
+            this.$store.dispatch('loadAllPosts')
+
+        }
         
     }
 }

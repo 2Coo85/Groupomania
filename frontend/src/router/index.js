@@ -44,12 +44,13 @@ const routes = [
     component: HR
   },
   {
-    path: '/settings',
+    path: '/user/:id?',
     name: 'Settings',
+    props: true,
     component: Settings
   },
   {
-    path: '/:id',
+    path: '/:id?',
     name: 'Post',
     props: true,
     component: PostDetail

@@ -66,32 +66,6 @@ exports.signup = async (req, res, next) => {
 }
 
 exports.login = async (req, res, next) => {
-    // try {
-    //     const { email, password } = req.body
-
-    //     if(!(email && password)){
-    //         res.status(400).send("All fields required")
-    //     }
-
-    //     const user = await User.findOne({ email })
-
-    //     if(user && (await bcrypt.compare(password, user.password))) {
-    //         const token = jwt.sign(
-    //             { userId: user._id, email },
-    //             process.env.TOKEN_KEY,
-    //             {expiresIn: "12h"}
-    //         )
-
-    //         user.token = token
-    //         console.log(token)
-    //         console.log(user)
-
-    //         res.status(200).json(user)
-    //     }
-    //     res.status(400).json("invalid login")
-    // } catch (error) {
-    //     console.log(error)
-    // }
     User.findOne({email: req.body.email}).then(
         (user) => {
             if (!user) {
@@ -138,3 +112,45 @@ exports.login = async (req, res, next) => {
     );
 }
 
+exports.deleteUser = async (req, res, next) => {
+    try{
+        // const { username, department, phone, email} = req.body;
+        // // encodedPassword = await bcrypt.hash(password, 10)
+        // const user = await User.create({
+        //     username,
+        //     department,
+        //     phone,
+        //     email,
+        // })
+            // password: encodedPassword})
+        User.findOne({_id: req.body.id}).then(
+        () => {
+            let user = {
+                username: req.body.username,
+                department: req.body.department,
+                email: req.body.email,
+                phone: req.body.phone,
+                password: req.body.password
+            }
+            User.deleteOne(user).then(
+                () => {
+                    if(user){
+                        res.status(200).json({
+                            message: 'User deleted successfully'
+                        })
+                    }
+                }
+            )
+            
+        }).catch (err => {
+            res.status(500).json({
+                err: err.message
+            })
+        })
+    } catch (err) {
+        res.status(501).json({
+            err: err.message
+        })
+    }
+
+}

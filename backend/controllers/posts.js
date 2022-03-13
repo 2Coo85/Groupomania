@@ -1,11 +1,14 @@
 const Post = require('../models/post');
+const { v4: uuidv4 } = require('uuid')
+const getPost = require('../middleware/getPost')
 
 exports.createPost = (req, res, next) => {
     //req.body.post = JSON.parse(req.body.post);
+    const _id = uuidv4();
     const url = req.protocol + '://' + req.get('host');
     if (req.file || req.body.content == '') {
         const post = new Post({
-            userId: req.body.userId,
+            _id: _id,
             username: req.body.username,
             department: req.body.department,
             title: req.body.title,
@@ -26,7 +29,7 @@ exports.createPost = (req, res, next) => {
         );  
     } else if( req.body.content !== '') {
         const post = new Post({
-            userId: req.body.userId,
+            _id: _id,
             username: req.body.username,
             department: req.body.department,
             title: req.body.title,
@@ -40,14 +43,15 @@ exports.createPost = (req, res, next) => {
             }
         ).catch(
             (error) => {
-                res.status(400).json({
-                    error: error
+                res.status(401).json({
+                    error: error.message
                 });
             }
         );
     }
     
 };
+
 
 exports.getOnePost = (req, res, next) => {
     Post.findOne({
@@ -66,64 +70,55 @@ exports.getOnePost = (req, res, next) => {
     );
 }
 
-exports.updatePost = (req, res, next) => {
-    let post = new Post({_id: req.params._id});
-    if (req.file) {
-        const url = req.protocol + '://' + req.get('host');
-        req.body.post = JSON.parse(req.body.post);
-        post = {
-            imageUrl: url + '/images/' + req.file.filename,
-            department: req.body.post.department,
-            content: req.body.post.content,
-            title: req.body.post.title,
-            username: req.body.post.username
-        };
-    } else {
-        post.find({_id: req.params.id}).then(
-            (postRes) => {
-            post = {
-                imageUrl: postRes.imageUrl,
-                department: req.body.department,
-                content: req.body.content,
-                title: req.body.title,
-                username: req.body.username
-            };
-            post.updateOne({_id: req.params.id}, post).then(
-                () => {
-                    res.status(201).json({
-                        message: 'Post updated successfully!'
-                    });
-                }
-            ).catch(
-                (error) => {
-                    res.status(400).json({
-                        error: error
-                    });
-                }
-            );                                     
-        }).catch(
-            (error) => {
-                res.status(404).json({
-                    error: error
-                });
-            }
-        );
+exports.updatePost = async (req, res, next) => {
+    let post;
+    try {
+        post = await Post.findById(req.params._id);
+
+        if (post == null) {
+            return res.status(404).send({
+                message: 'Post not found',
+                post
+            })
+        }
+        
+    } catch (error) {
+        return res.status(500).json({
+            messasge: error.message
+        })
     }
-    post.updateOne({_id: req.params.id}, post).then(
-        () => {
-            res.status(201).json({
-                message: 'Post updated successfully!'
-            });
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
+    res.post = post
+    if (req.body.content != null) {
+        res.post.content = req.body.content;
+    }
+    const url = req.protocol + '://' + req.get('host');
+    req.body.file = url + '/images/' + req.file.filename
+    if (req.body.file != null) {
+        res.post.file = req.body.file;
+    }
+
+    try { 
+        const updatePost = await res.post.save()
+        res.json(updatePost);
+    } catch (err) {
+        res.status(400).json({ message: err.message })
+    }
+    
+
+    
 }
 
+exports.deletePost = getPost,  async (req, res, next) => {
+    
+    try {
+        await res.post.deleteOne()
+        res.json({
+            messasge: 'Post has been deleted successfully', post: res.post
+        })
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
+};
 
 exports.getAllPosts = (req, res, next) => {
     Post.find().then(
